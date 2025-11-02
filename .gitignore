@@ -11,6 +11,7 @@
 /.env
 /.env.*
 !/.env.example
+/CLAUDE.md
 
 # Ignore all logfiles and tempfiles.
 /log/*
