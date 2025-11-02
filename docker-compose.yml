@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bin/dev"
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_HOST=host.docker.internal
+      - DATABASE_PORT=3307
+      - DATABASE_NAME=mariadb
+      - DATABASE_USERNAME=mariadb
+      - DATABASE_PASSWORD=mariadb
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    networks:
+      - shared-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stdin_open: true
+    tty: true
+
+volumes:
+  bundle_cache:
+  node_modules:
+
+networks:
+  shared-network:
+    external: true
