@@ -1,0 +1,104 @@
+<% if @results.any? %>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+            <tr>
+                <th scope="col">Randonnée</th>
+                <th scope="col">Point de départ</th>
+                <th scope="col">Distance (km)</th>
+                <th scope="col">D+ (m)</th>
+                <th scope="col">D- (m)</th>
+                <th scope="col">Alt min (m)</th>
+                <th scope="col">Alt max (m)</th>
+                <th scope="col">Difficulté</th>
+                <th scope="col">Dernière date</th>
+                <th scope="col">Dernier guide</th>
+                <% if can?('update', 'Hike') || can?('destroy', 'Hike') %>
+                    <th scope="col">Actions</th>
+                <% end %>
+            </tr>
+            </thead>
+            <tbody>
+            <% @results.each do |hike| %>
+                <tr>
+                    <td><%= hike.trail_name %></td>
+                    <td><%= hike.starting_point %></td>
+                    <td><%= hike.distance_km %></td>
+                    <td><%= hike.elevation_gain %></td>
+                    <td><%= hike.elevation_loss %></td>
+                    <td><%= hike.altitude_min %></td>
+                    <td><%= hike.altitude_max %></td>
+                    <td><%= hike.difficulty_text %></td>
+                    <td><%= hike.last_hiking_date&.strftime("%d/%m/%Y") %></td>
+                    <td><%= hike.last_guide_name %></td>
+                    <td class="text-nowrap">
+                        <div class="btn-group">
+                            <%= render partial: "roadmap", locals: { hike: hike } %>
+
+                            <% show_if_authorized('HikeHistory', 'index') do %>
+                                <%= link_to hike_histories_path(hike_id: hike.id),
+                                            class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
+                                            style: "width: 32px; height: 32px;",
+                                            title: "Voir l'historique" do %>
+                                    <i class="fas fa-history"></i>
+                                <% end %>
+                            <% end %>
+
+                            <% show_if_authorized('Hike', 'edit') do %>
+                                <%= link_to edit_hike_path(hike),
+                                            class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
+                                            style: "width: 32px; height: 32px;",
+                                            title: "Editer" do %>
+                                    <i class="fas fa-pen"></i>
+                                <% end %>
+                            <% end %>
+
+                            <% show_if_authorized('Hike', 'update') do %>
+                                <% if hike.updating? %>
+                                    <button class="btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center"
+                                            style="width: 32px; height: 32px;"
+                                            disabled>
+                                        <i class="fas fa-sync-alt fa-spin"></i>
+                                    </button>
+                                <% elsif hike.openrunner_ref.blank? || hike.openrunner_ref == 0 || hike.openrunner_ref == "0" %>
+                                    <button class="btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center"
+                                            style="width: 32px; height: 32px;"
+                                            disabled
+                                            title="Pas de référence OpenRunner">
+                                        <i class="fas fa-ban text-danger"></i>
+                                    </button>
+                                <% else %>
+                                    <%= button_to refresh_from_openrunner_hike_path(hike, redirect_path: hikes_path),
+                                                  class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
+                                                  style: "width: 32px; height: 32px;",
+                                                  title: "Dernière mise à jour: #{hike.last_update_attempt&.strftime('%d/%m/%Y %H:%M') || 'Jamais'}",
+                                                  data: { turbo: false },
+                                                  params: { search: params[:search] } do %>
+                                        <i class="fas fa-sync-alt"></i>
+                                    <% end %>
+                                <% end %>
+                            <% end %>
+
+                            <% show_if_authorized('Hike', 'destroy') do %>
+                                <%= button_to hike_path(hike),
+                                              method: :delete,
+                                              class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
+                                              style: "width: 32px; height: 32px;",
+                                              title: "Supprimer",
+                                              form: { style: 'display: inline-block', onsubmit: "return confirmDelete(event, 'ce parcours')" },
+                                              form_class: 'button_to' do %>
+                                    <i class="fas fa-trash"></i>
+                                <% end %>
+                            <% end %>
+                        </div>
+                    </td>
+                </tr>
+            <% end %>
+            </tbody>
+        </table>
+    </div>
+<% elsif params[:trail_name].present? || params[:starting_point].present? %>
+    <div class="alert alert-info" role="alert">
+        Aucun résultat trouvé pour votre recherche
+    </div>
+<% end %>

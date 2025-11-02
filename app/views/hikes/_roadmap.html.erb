@@ -1,0 +1,19 @@
+<% if hike.hike_path&.coordinates.blank? and (hike.openrunner_ref.blank? or hike.openrunner_ref == 0 or hike.openrunner_ref == "0") %>
+    <button class="btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center"
+            style="width: 32px; height: 32px;"
+            disabled
+            title="Pas de référence OpenRunner">
+        <i class="fas fa-ban text-danger"></i>
+    </button>
+<% else %>
+    <% show_if_authorized('Hike', 'show') do %>
+        <% url = hike.hike_path&.coordinates.blank? ? "https://www.openrunner.com/route-details/#{hike.openrunner_ref}" : hike_path_path(id: hike.hike_path.id) %>
+        <%= link_to url,
+                    class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
+                    style: "width: 32px; height: 32px;",
+                    target: "_blank",
+                    title: "Voir sur OpenRunner" do %>
+            <i class="fas fa-mountain"></i>
+        <% end %>
+    <% end %>
+<% end %>

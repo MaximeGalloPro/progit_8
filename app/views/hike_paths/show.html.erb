@@ -1,0 +1,382 @@
+<div class="container py-4">
+    <div class="card rounded mt-3">
+        <div class="card-header">
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3 text-center">
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Distance :</div>
+                        <div id="distance">0 km</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Dénivelé + :</div>
+                        <div id="elevation-gain">0 m</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Dénivelé - :</div>
+                        <div id="elevation-loss">0 m</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Altitude min :</div>
+                        <div id="min-altitude">0 m</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Altitude max :</div>
+                        <div id="max-altitude">0 m</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <button type="button" id="locate-user" class="btn btn-outline-primary w-100">
+                Localiser ma position
+            </button>
+            <div id="map-container">
+                <div id="map" data-coordinates='<%= @hike_path&.coordinates %>'></div>
+            </div>
+
+            <canvas id="elevationChart" width="800" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    #map-container {
+        position: relative;
+        height: 30rem;
+        margin-top: 1rem;
+    }
+
+    #map {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        border-radius: 0.375rem;
+    }
+
+    .stat-item {
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    @media (max-width: 768px) {
+        #map-container {
+            height: 25rem;
+        }
+    }
+</style>
+
+<script>
+    window.hikeMap = {
+        map: null,
+        currentRoute: null,
+        chartInstance: null,
+        userMarker: null,
+
+
+        initialize: function() {
+            const mapElement = document.getElementById('map');
+            if (!mapElement || this.map) return;
+
+            this.map = L.map('map').setView([44.0556, 5.1283], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(this.map);
+
+            // Safely parse coordinates from the data attribute
+            let coordinates;
+            try {
+                const coordsData = mapElement.dataset.coordinates;
+                coordinates = coordsData ? JSON.parse(coordsData) : [];
+
+                // Validate that coordinates is an array
+                if (!Array.isArray(coordinates)) {
+                    console.error('Coordinates data is not an array:', coordinates);
+                    coordinates = [];
+                }
+
+                // Fermer la boucle si 3 points ou plus
+                if (coordinates.length >= 3 &&
+                    (coordinates[0][0] !== coordinates[coordinates.length - 1][0] ||
+                        coordinates[0][1] !== coordinates[coordinates.length - 1][1])) {
+                    coordinates.push([...coordinates[0]]);
+                }
+
+            } catch (error) {
+                console.error('Error parsing coordinates:', error);
+                coordinates = [];
+            }
+
+            // Only proceed if we have valid coordinates
+            if (coordinates.length >= 2) {
+                const points = coordinates.map(coord => {
+                    // Ensure each coordinate is in the correct format
+                    if (Array.isArray(coord) && coord.length >= 2) {
+                        return [parseFloat(coord[0]), parseFloat(coord[1])];
+                    }
+                    console.warn('Invalid coordinate format:', coord);
+                    return null;
+                }).filter(point => point !== null);
+
+                // Add markers and proceed only if we have valid points
+                if (points.length >= 2) {
+                    points.forEach((point, index) => {
+                        L.marker(point, {
+                            title: `Point ${index + 1}`
+                        }).addTo(this.map);
+                    });
+
+                    this.fetchRoute(points);
+                } else {
+                    console.error('Not enough valid coordinates to create a route');
+                }
+            } else {
+                console.log('Not enough coordinates provided to create a route');
+            }
+
+            // Initialize location tracking
+            this.initializeLocationTracking();
+        },
+
+        initializeLocationTracking: function() {
+            const locateButton = document.getElementById('locate-user');
+            if (!locateButton) return;
+
+            locateButton.addEventListener('click', () => {
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const { latitude, longitude } = position.coords;
+
+                            // Update or create user marker
+                            if (this.userMarker) {
+                                this.userMarker.setLatLng([latitude, longitude]);
+                            } else {
+                                this.userMarker = L.marker([latitude, longitude], {
+                                    icon: L.divIcon({
+                                        className: 'user-location-marker',
+                                        html: '<div style="background-color: #007bff; width: 15px; height: 15px; border-radius: 50%; border: 2px solid white;"></div>'
+                                    })
+                                }).addTo(this.map);
+                            }
+
+                            // Center map on user location
+                            this.map.setView([latitude, longitude], 15);
+                        },
+                        (error) => {
+                            console.error('Error getting location:', error);
+                            alert('Impossible d\'obtenir votre position. Veuillez vérifier vos paramètres de localisation.');
+                        }
+                    );
+                } else {
+                    alert('La géolocalisation n\'est pas supportée par votre navigateur.');
+                }
+            });
+        },
+
+        fetchRoute: function(points) {
+            const apiKey = '5b3ce3597851110001cf6248d56a72cc718348038c651734f42f7749';
+            const url = `https://api.openrouteservice.org/v2/directions/foot-hiking/geojson?api_key=${apiKey}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    coordinates: points.map(point => [point[1], point[0]]),
+                    elevation: true
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (this.currentRoute) {
+                        this.map.removeLayer(this.currentRoute);
+                    }
+
+                    this.currentRoute = L.geoJSON(data, {
+                        style: {color: 'blue', weight: 4}
+                    }).addTo(this.map);
+
+                    const bounds = L.latLngBounds(points);
+                    this.map.fitBounds(bounds);
+
+                    this.displayRouteStats(data);
+                    this.generateElevationChart(data.features[0].geometry.coordinates);
+                })
+                .catch(error => {
+                    console.error('Error fetching route:', error);
+                    alert('Erreur lors du chargement de l\'itinéraire. Veuillez réessayer plus tard.');
+                });
+        },
+
+        displayRouteStats: function(data) {
+            try {
+                const coordinates = data.features[0].geometry.coordinates;
+                const altitudes = coordinates.map(coord => coord[2]);
+                const summary = data.features[0].properties.summary;
+
+                // Distance
+                const distance = summary.distance / 1000;
+                document.getElementById('distance').textContent = distance.toFixed(2) + ' km';
+
+                // Dénivelés
+                let elevationGain = 0;
+                let elevationLoss = 0;
+
+                for (let i = 1; i < altitudes.length; i++) {
+                    const diff = altitudes[i] - altitudes[i - 1];
+                    if (diff > 0) {
+                        elevationGain += diff;
+                    } else {
+                        elevationLoss -= diff;
+                    }
+                }
+
+                document.getElementById('elevation-gain').textContent = Math.round(elevationGain) + ' m';
+                document.getElementById('elevation-loss').textContent = Math.round(elevationLoss) + ' m';
+
+                // Altitudes
+                if (altitudes.length > 0) {
+                    const minAltitude = Math.round(Math.min(...altitudes));
+                    const maxAltitude = Math.round(Math.max(...altitudes));
+
+                    document.getElementById('min-altitude').textContent = minAltitude + ' m';
+                    document.getElementById('max-altitude').textContent = maxAltitude + ' m';
+                }
+            } catch (error) {
+                console.error("Erreur lors du traitement des statistiques :", error);
+            }
+        },
+
+        generateElevationChart: function(coordinates) {
+            const chartElement = document.getElementById('elevationChart');
+            if (this.chartInstance) {
+                this.chartInstance.destroy();
+            }
+
+            const {distances, altitudes} = this.calculateDistancesAndAltitudes(coordinates);
+            const ctx = chartElement.getContext('2d');
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, "rgba(255, 0, 0, 0.7)");
+            gradient.addColorStop(0.5, "rgba(255, 255, 0, 0.7)");
+            gradient.addColorStop(1, "rgba(0, 255, 0, 0.7)");
+
+            this.chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: distances.map(d => `${d.toFixed(2)} km`),
+                    datasets: [{
+                        label: 'Altitude (m)',
+                        data: altitudes,
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointStyle: false,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            intersect: false,
+                            mode: 'nearest',
+                            callbacks: {
+                                label: function(context) {
+                                    const altitude = context.raw;
+                                    const distance = distances[context.dataIndex];
+                                    return `Distance: ${distance.toFixed(2)} km, Altitude: ${altitude} m`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Distance (km)',
+                                font: { size: 14 }
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Altitude (m)',
+                                font: { size: 14 }
+                            },
+                            grid: { color: 'rgba(200, 200, 200, 0.5)' }
+                        }
+                    }
+                }
+            });
+        },
+
+        calculateDistancesAndAltitudes: function(coordinates) {
+            const distances = [0];
+            const altitudes = coordinates.map(coord => coord[2]);
+
+            for (let i = 1; i < coordinates.length; i++) {
+                const [lon1, lat1] = coordinates[i - 1];
+                const [lon2, lat2] = coordinates[i];
+                const distance = this.haversineDistance(lat1, lon1, lat2, lon2);
+                distances.push(distances[i - 1] + distance);
+            }
+
+            return {distances, altitudes};
+        },
+
+        haversineDistance: function(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            const toRad = x => (x * Math.PI) / 180;
+
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+
+            const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
+        },
+
+        cleanup: function() {
+            if (this.map) {
+                this.map.remove();
+                this.map = null;
+            }
+            if (this.chartInstance) {
+                this.chartInstance.destroy();
+                this.chartInstance = null;
+            }
+            this.currentRoute = null;
+            this.userMarker = null;
+        }
+    };
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        window.hikeMap.initialize();
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>

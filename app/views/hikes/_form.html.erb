@@ -1,0 +1,241 @@
+<!--app/views/hikes/_form.html.erb-->
+<%= form_with(model: @hike, local: true) do |f| %>
+    <% if @hike.errors.any? %>
+        <div class="alert alert-danger">
+            <h2 class="h6"><%= pluralize(@hike.errors.count, "erreur") %> :</h2>
+            <ul class="mb-0">
+                <% @hike.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    <% end %>
+
+    <%# OpenRunner Reference en premier avec le bouton de mise à jour %>
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <%= f.label :openrunner_ref, "Référence OpenRunner", class: "form-label d-block w-100" %>
+                <div class="input-group">
+                    <%= f.text_field :openrunner_ref,
+                                     class: "form-control #{'is-invalid' if @hike.errors[:openrunner_ref].any?}",
+                                     id: 'openrunner_ref_input' %>
+                    <button type="button" class="btn btn-outline-primary" id="fetch_openrunner_data">
+                        <i class="fas fa-sync-alt"></i>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" id="loading_spinner"></span>
+                    </button>
+                </div>
+                <i>La récupération des informations prend en moyenne 6 secondes.</i>
+                <% if @hike.errors[:openrunner_ref].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:openrunner_ref].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :trail_name, "Nom du parcours", class: "form-label required" %>
+                <%= f.text_field :trail_name,
+                                 class: "form-control #{'is-invalid' if @hike.errors[:trail_name].any?}" %>
+                <% if @hike.errors[:trail_name].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:trail_name].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :starting_point, "Point de départ", class: "form-label required" %>
+                <%= f.text_field :starting_point,
+                                 class: "form-control #{'is-invalid' if @hike.errors[:starting_point].any?}" %>
+                <% if @hike.errors[:starting_point].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:starting_point].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :distance_km, "Distance (km)", class: "form-label required" %>
+                <%= f.number_field :distance_km,
+                                   class: "form-control #{'is-invalid' if @hike.errors[:distance_km].any?}",
+                                   step: "0.01" %>
+                <% if @hike.errors[:distance_km].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:distance_km].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :elevation_gain, "Dénivelé + (m)", class: "form-label required" %>
+                <%= f.number_field :elevation_gain,
+                                   class: "form-control #{'is-invalid' if @hike.errors[:elevation_gain].any?}" %>
+                <% if @hike.errors[:elevation_gain].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:elevation_gain].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :elevation_loss, "Dénivelé - (m)", class: "form-label" %>
+                <%= f.number_field :elevation_loss,
+                                   class: "form-control #{'is-invalid' if @hike.errors[:elevation_loss].any?}" %>
+                <% if @hike.errors[:elevation_loss].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:elevation_loss].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :altitude_min, "Altitude min (m)", class: "form-label" %>
+                <%= f.number_field :altitude_min,
+                                   class: "form-control #{'is-invalid' if @hike.errors[:altitude_min].any?}" %>
+                <% if @hike.errors[:altitude_min].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:altitude_min].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :altitude_max, "Altitude max (m)", class: "form-label" %>
+                <%= f.number_field :altitude_max,
+                                   class: "form-control #{'is-invalid' if @hike.errors[:altitude_max].any?}" %>
+                <% if @hike.errors[:altitude_max].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:altitude_max].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :day, "Type", class: "form-label" %>
+                <%= f.select :day,
+                             [
+                                 ['Sélectionnez un type de repas', ''],
+                                 ['Apéro', 'apero'],
+                                 ['Petit déjeuner', 'petit_dejeuner'],
+                                 ['Déjeuner', 'dejeuner'],
+                                 ['Dîner', 'diner'],
+                                 ['Pique-nique', 'picnic']
+                             ],
+                             {},
+                             { class: "form-select #{'is-invalid' if @hike.errors[:meal_type].any?}" }
+                %>
+                <% if @hike.errors[:meal_type].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:meal_type].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :difficulty, "Difficulté", class: "form-label required" %>
+                <div class="d-flex align-items-center">
+                    <%= f.range_field :difficulty,
+                                      min: 1,
+                                      max: 5,
+                                      value: @hike.difficulty,
+                                      class: "form-range me-2 #{'is-invalid' if @hike.errors[:difficulty].any?}",
+                                      style: "width: 70%;",
+                                      data: {
+                                          controller: "difficulty",
+                                          difficulties: {
+                                              "1": "Très facile",
+                                              "2": "Facile",
+                                              "3": "Moyen",
+                                              "4": "Difficile",
+                                              "5": "Très difficile"
+                                          }.to_json
+                                      } %>
+                    <span class="badge bg-primary ms-2" data-difficulty-target="display">
+              <%= "#{@hike.difficulty} - #{@hike.difficulty_text}" %>
+            </span>
+                </div>
+                <% if @hike.errors[:difficulty].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:difficulty].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('input', function (e) {
+                if (e.target.matches('input[type="range"]')) {
+                    const difficulties = {
+                        "1": "Très facile",
+                        "2": "Facile",
+                        "3": "Moyen",
+                        "4": "Difficile",
+                        "5": "Très difficile"
+                    };
+                    if (!e.target.dataset.controller) return;
+                    const value = e.target.value;
+                    const display = e.target.closest('.mb-3').querySelector('.badge');
+                    display.textContent = `${value} - ${difficulties[value]}`;
+                }
+            });
+        </script>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :carpooling_cost, "Coût covoiturage", class: "form-label" %>
+                <%= f.number_field :carpooling_cost, step: 0.1,
+                                   class: "form-control #{'is-invalid' if @hike.errors[:carpooling_cost].any?}" %>
+                <% if @hike.errors[:carpooling_cost].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike.errors[:carpooling_cost].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <%= f.hidden_field :coordinates, :value => "" %>
+    <%= render "hike_paths/map", variable: @hike_path %>
+
+    <div class="mt-4">
+        <%= link_to "Retour", hikes_path, class: "btn btn-outline-secondary ms-2" %>
+        <% show_if_authorized('Hike', 'update') do %>
+            <%= f.submit "Enregistrer", class: "btn btn-primary", style: "float: right" %>
+        <% end %>
+    </div>
+<% end %>
+
+<script type="module">
+    import "hikes"
+    import "map"
+
+    <% unless @hike_path&.coordinates.blank? %>
+    document.addEventListener('DOMContentLoaded', () => {
+        const event = new CustomEvent('coordinatesLoaded', {
+            detail: <%= @hike_path.coordinates.to_json.html_safe %>
+        });
+        document.dispatchEvent(event);
+    });
+    <% end %>
+</script>

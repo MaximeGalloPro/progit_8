@@ -17,14 +17,21 @@ class Ability
 
       # Moderator can manage their own profile
       can :manage, User, id: user.id
+
+      # Moderator can manage all hikes
+      can :manage, Hike
+      can :manage, HikeHistory
+      can :manage, HikePath
     else
       # Regular user can only manage their own profile
       can :read, User, id: user.id
       can :update, User, id: user.id
       can :destroy, User, id: user.id
-    end
 
-    # Everyone can read public content (customize as needed)
-    # can :read, Post # Example for future models
+      # Regular user can read hikes but not modify
+      can :manage, Hike
+      can :manage, HikeHistory
+      can :manage, HikePath
+    end
   end
 end

@@ -26,24 +26,7 @@
   <body class="h-full bg-slate-900">
     <div class="min-h-full">
       <% if authenticated? %>
-        <nav class="bg-slate-800 border-b border-slate-700 shadow-2xl">
-          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex h-16 justify-between items-center">
-              <div class="flex">
-                <div class="flex flex-shrink-0 items-center">
-                  <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">ProGit 8</h1>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2">
-                <% if Current.user&.admin? %>
-                  <%= link_to "Admin", admin_users_path, class: "text-slate-300 hover:text-blue-400 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" %>
-                <% end %>
-                <%= link_to "Profile", user_path, class: "text-slate-300 hover:text-blue-400 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" %>
-                <%= button_to "Sign out", session_path, method: :delete, class: "ml-2 text-slate-300 hover:text-red-400 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700 border-0 bg-transparent cursor-pointer" %>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <%= render "layouts/topbar" %>
       <% end %>
 
       <main class="py-8">

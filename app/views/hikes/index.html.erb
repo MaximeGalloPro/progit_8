@@ -1,0 +1,51 @@
+<% content_for :head do %>
+    <meta name="turbo-visit-control" content="reload">
+<% end %>
+<div class="container py-4">
+    <div class="row g-2 mb-4">
+        <div class="col-12 col-md-3">
+            <%= link_to new_hike_history_path, class: "btn btn-outline-primary w-100" do %>
+                <i class="fas fa-history me-2"></i>
+                Ajouter une randonnée passée
+            <% end %>
+        </div>
+        <div class="col-12 col-md-3">
+            <%= link_to new_hike_history_path, class: "btn btn-outline-primary w-100" do %>
+                <i class="fas fa-calendar-plus me-2"></i>
+                Ajouter une randonnée à venir
+            <% end %>
+        </div>
+        <div class="col-12 col-md-3">
+            <%= link_to new_hike_path, class: "btn btn-outline-primary w-100" do %>
+                <i class="fas fa-map-marked-alt me-2"></i>
+                Ajouter un nouveau parcours
+            <% end %>
+        </div>
+    </div>
+    <%= form_with url: hikes_path, method: :get, local: true, class: "mb-4" do |f| %>
+        <div class="row g-3">
+            <div class="col-md-8">
+                <%= f.text_field :search,
+                                 placeholder: "Rechercher par nom, lieu ou date (ex: 12/2024)...",
+                                 value: params[:search],
+                                 class: "form-control" %>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex">
+                    <%= f.submit "Rechercher", class: "btn btn-outline-primary flex-grow-1" %>
+                    <%= link_to "Réinitialiser", hikes_path, class: "btn btn-outline-secondary ms-2" %>
+                </div>
+            </div>
+        </div>
+    <% end %>
+    <!-- Mobile view -->
+    <div class="md:hidden">
+        <%= render partial: "list_mobile" %>
+    </div>
+
+    <!-- Desktop view -->
+    <div class="hidden md:block">
+        <%= render partial: "list" %>
+    </div>
+
+</div>

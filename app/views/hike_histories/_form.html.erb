@@ -1,0 +1,116 @@
+<%= form_with(model: @hike_history, local: true) do |f| %>
+    <% if @hike_history.errors.any? %>
+        <div class="alert alert-danger">
+            <h2 class="h6"><%= pluralize(@hike_history.errors.count, "erreur") %> :</h2>
+            <ul class="mb-0">
+                <% @hike_history.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    <% end %>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :hike_id, "Randonnée", class: "form-label required" %>
+                <div class="d-flex gap-2">
+                    <%= f.collection_select :hike_id,
+                                            @hikes,
+                                            :id,
+                                            ->(hike) { "#{hike.trail_name} (#{hike.starting_point})" },
+                                            { prompt: "Rechercher une randonnée..." },
+                                            { class: "select2 #{'is-invalid' if @hike_history.errors[:hike_id].any?}" } %>
+                    <%= link_to new_hike_path,
+                                class: "btn btn-outline-dark",
+                                style: "white-space: nowrap;",
+                                title: "Ajouter un nouveau parcours" do %>
+                        <i class="fas fa-plus"></i>
+                    <% end %>
+                </div>
+                <% if @hike_history.errors[:hike_id].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike_history.errors[:hike_id].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :member_id, "Guide", class: "form-label required" %>
+                <div class="d-flex gap-2">
+                    <%#= f.collection_select :member_id,
+                                            @members,
+                                            :id,
+                                            ->(member) { "#{member.name} - #{member.phone}" },
+                                            { prompt: "Sélectionnez un membre" },
+                                            { class: "form-select #{'is-invalid' if @hike_history.errors[:member_id].any?}" } %>
+                    <% if @hike_history.errors[:member_id].any? %>
+                        <div class="invalid-feedback">
+                            <%= @hike_history.errors[:member_id].join(', ') %>
+                        </div>
+                    <% end %>
+                    <%#= link_to new_member_path,
+                                class: "btn btn-outline-dark",
+                                style: "white-space: nowrap;",
+                                title: "Ajouter un nouveau membre" do %>
+                        <i class="fas fa-plus"></i>
+                    <%# end %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :hiking_date, "Date", class: "form-label required" %>
+                <%= f.date_field :hiking_date,
+                                 class: "form-control #{'is-invalid' if @hike_history.errors[:hiking_date].any?}" %>
+                <% if @hike_history.errors[:hiking_date].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike_history.errors[:hiking_date].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :departure_time, "Heure de départ", class: "form-label required" %>
+                <%= f.time_field :departure_time,
+                                 class: "form-control #{'is-invalid' if @hike_history.errors[:departure_time].any?}",
+                                 value: begin
+                                            @hike_history.departure_time.present? ?
+                                                @hike_history.departure_time.strftime("%H:%M") :
+                                                Time.current.strftime("%H:%M")
+                                        rescue
+                                            Time.current.strftime("%H:%M")
+                                        end %>
+                <% if @hike_history.errors[:departure_time].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike_history.errors[:departure_time]&.join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <%= f.label :carpooling_cost, "Coût covoiturage", class: "form-label" %>
+                <%= f.number_field :carpooling_cost,
+                                   step: 0.5,
+                                   class: "form-control #{'is-invalid' if @hike_history.errors[:carpooling_cost].any?}" %>
+                <% if @hike_history.errors[:carpooling_cost].any? %>
+                    <div class="invalid-feedback">
+                        <%= @hike_history.errors[:carpooling_cost].join(', ') %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+        <%= link_to "Retour", hikes_path, class: "btn btn-outline-secondary ms-2" %>
+    </div>
+<% end %>

@@ -1,0 +1,124 @@
+<div class="container py-4">
+    <!-- Messages d'erreur -->
+    <% if @hike_path&.errors&.any? %>
+        <div class="alert alert-danger">
+            <h2 class="h6"><%= pluralize(@hike_path&.errors&.count, "erreur") %> :</h2>
+            <ul class="mb-0">
+                <% @hike_path&.errors&.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    <% end %>
+
+    <div class="card rounded mt-3">
+        <!-- Statistiques -->
+        <div class="card-header">
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3 text-center">
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Distance :</div>
+                        <div id="distance">0 km</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Dénivelé + :</div>
+                        <div id="elevation-gain">0 m</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Dénivelé - :</div>
+                        <div id="elevation-loss">0 m</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Altitude min :</div>
+                        <div id="min-altitude">0 m</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-item">
+                        <div class="fw-bold mb-1">Altitude max :</div>
+                        <div id="max-altitude">0 m</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Contrôles -->
+            <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+
+                <div class="col">
+                    <button type="button" id="locate-user" class="btn btn-outline-primary w-100">
+                        Localiser ma position
+                    </button>
+                </div>
+                <div class="col">
+                    <div class="form-check form-switch" style="padding-top: 0.5rem">
+                        <input class="form-check-input" type="checkbox" role="switch" id="closeLoopCheckbox" checked/>
+                        <label class="form-check-label fw-bold" for="closeLoopCheckbox">
+                            Activer la fermeture de la boucle
+                        </label>
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="button" id="undo" class="btn btn-outline-dark w-100">
+                        Supprimer le dernier point
+                    </button>
+                </div>
+            </div>
+            <!-- Carte -->
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
+
+            <!-- Graphique élévation -->
+            <canvas id="elevationChart" width="800" height="200" style="display: none"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    #map-container {
+        position: relative;
+        height: 30rem;
+        margin-top: 1rem;
+    }
+
+    #map {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        border-radius: 0.375rem;
+    }
+
+    .custom-div-icon {
+        background: none;
+        border: none;
+    }
+
+    .stat-item {
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    @media (max-width: 768px) {
+        #map-container {
+            height: 25rem;
+        }
+
+        .form-check {
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>

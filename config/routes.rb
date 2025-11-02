@@ -21,6 +21,11 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "omniauth_callbacks#google_oauth2"
   get "/auth/failure", to: "omniauth_callbacks#failure"
 
+  # Hikes
+  resources :hikes
+  resources :hike_histories
+  resources :hike_paths
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
