@@ -5,7 +5,6 @@
 class Hike < ApplicationRecord
     # Associations
     has_many :hike_histories, dependent: :destroy
-    has_many :members, through: :hike_histories
     has_one :latest_history,
             -> { order(hiking_date: :desc) },
             class_name: 'HikeHistory',
@@ -88,9 +87,7 @@ class Hike < ApplicationRecord
     def self.todays_hike
         today_query = joins(:hike_histories)
                       .select('hikes.*, hike_histories.departure_time,
-                             hike_histories.hiking_date,
-                             members.name as guide_name')
-                      .joins('LEFT JOIN members ON members.id = hike_histories.member_id')
+                             hike_histories.hiking_date')
 
         today_hike = today_query
                      .where(hike_histories: { hiking_date: Date.current })

@@ -1,104 +1,113 @@
 <% if @results.any? %>
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead class="table-light">
+    <%
+        has_any_permission = can?(:update, Hike) ||
+            can?(:destroy, Hike) ||
+            can?(:read, HikeHistory)
+    %>
+    <div class="overflow-x-auto bg-slate-800 rounded-2xl shadow-2xl border border-slate-700">
+        <table data-datatable class="min-w-full divide-y divide-slate-700">
+            <thead class="bg-slate-700/50">
             <tr>
-                <th scope="col">Randonnée</th>
-                <th scope="col">Point de départ</th>
-                <th scope="col">Distance (km)</th>
-                <th scope="col">D+ (m)</th>
-                <th scope="col">D- (m)</th>
-                <th scope="col">Alt min (m)</th>
-                <th scope="col">Alt max (m)</th>
-                <th scope="col">Difficulté</th>
-                <th scope="col">Dernière date</th>
-                <th scope="col">Dernier guide</th>
-                <% if can?('update', 'Hike') || can?('destroy', 'Hike') %>
-                    <th scope="col">Actions</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Randonnée</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Point de départ</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Distance (km)</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">D+ (m)</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">D- (m)</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Alt min (m)</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Alt max (m)</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Difficulté</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Dernière date</th>
+                <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Dernier guide</th>
+                <% if has_any_permission %>
+                    <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-slate-300">Actions</th>
                 <% end %>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-slate-700">
             <% @results.each do |hike| %>
-                <tr>
-                    <td><%= hike.trail_name %></td>
-                    <td><%= hike.starting_point %></td>
-                    <td><%= hike.distance_km %></td>
-                    <td><%= hike.elevation_gain %></td>
-                    <td><%= hike.elevation_loss %></td>
-                    <td><%= hike.altitude_min %></td>
-                    <td><%= hike.altitude_max %></td>
-                    <td><%= hike.difficulty_text %></td>
-                    <td><%= hike.last_hiking_date&.strftime("%d/%m/%Y") %></td>
-                    <td><%= hike.last_guide_name %></td>
-                    <td class="text-nowrap">
-                        <div class="btn-group">
-                            <%= render partial: "roadmap", locals: { hike: hike } %>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.trail_name %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.starting_point %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.distance_km %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.elevation_gain %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.elevation_loss %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.altitude_min %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.altitude_max %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.difficulty_text %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.last_hiking_date&.strftime("%d/%m/%Y") %></td>
+                    <td class="px-4 py-3 text-sm text-white"><%= hike.last_guide_name %></td>
+                    <% if has_any_permission %>
+                        <td class="px-4 py-3 text-sm whitespace-nowrap">
+                            <div class="flex gap-1">
+                                <%= render partial: "roadmap", locals: { hike: hike } %>
 
-                            <% show_if_authorized('HikeHistory', 'index') do %>
-                                <%= link_to hike_histories_path(hike_id: hike.id),
-                                            class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
-                                            style: "width: 32px; height: 32px;",
-                                            title: "Voir l'historique" do %>
-                                    <i class="fas fa-history"></i>
+                                <%= link_to_if_authorized hike_histories_path(hike_id: hike.id),
+                                                          action: :read,
+                                                          resource: HikeHistory,
+                                                          class: "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-all",
+                                                          title: "Voir l'historique" do %>
+                                    <i class="icon icon-history text-sm"></i>
                                 <% end %>
-                            <% end %>
 
-                            <% show_if_authorized('Hike', 'edit') do %>
-                                <%= link_to edit_hike_path(hike),
-                                            class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
-                                            style: "width: 32px; height: 32px;",
-                                            title: "Editer" do %>
-                                    <i class="fas fa-pen"></i>
+                                <%= link_to_if_authorized edit_hike_path(hike),
+                                                          action: :update,
+                                                          resource: Hike,
+                                                          class: "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-all",
+                                                          title: "Editer" do %>
+                                    <i class="icon icon-pen text-sm"></i>
                                 <% end %>
-                            <% end %>
 
-                            <% show_if_authorized('Hike', 'update') do %>
-                                <% if hike.updating? %>
-                                    <button class="btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center"
-                                            style="width: 32px; height: 32px;"
-                                            disabled>
-                                        <i class="fas fa-sync-alt fa-spin"></i>
-                                    </button>
-                                <% elsif hike.openrunner_ref.blank? || hike.openrunner_ref == 0 || hike.openrunner_ref == "0" %>
-                                    <button class="btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center"
-                                            style="width: 32px; height: 32px;"
-                                            disabled
-                                            title="Pas de référence OpenRunner">
-                                        <i class="fas fa-ban text-danger"></i>
-                                    </button>
-                                <% else %>
-                                    <%= button_to refresh_from_openrunner_hike_path(hike, redirect_path: hikes_path),
-                                                  class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
-                                                  style: "width: 32px; height: 32px;",
-                                                  title: "Dernière mise à jour: #{hike.last_update_attempt&.strftime('%d/%m/%Y %H:%M') || 'Jamais'}",
-                                                  data: { turbo: false },
-                                                  params: { search: params[:search] } do %>
-                                        <i class="fas fa-sync-alt"></i>
+                                <% if can?(:update, Hike) %>
+                                    <% if hike.updating? %>
+                                        <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-400 cursor-not-allowed" disabled>
+                                            <i class="icon icon-sync-alt spin text-sm"></i>
+                                        </button>
+                                    <% elsif hike.openrunner_ref.blank? || hike.openrunner_ref == 0 || hike.openrunner_ref == "0" %>
+                                        <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-red-400 cursor-not-allowed"
+                                                disabled
+                                                title="Pas de référence OpenRunner">
+                                            <i class="icon icon-ban text-sm"></i>
+                                        </button>
+                                    <% else %>
+                                        <%= button_to_if_authorized refresh_from_openrunner_hike_path(hike, redirect_path: hikes_path),
+                                                                     action: :update,
+                                                                     resource: Hike,
+                                                                     class: "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-all",
+                                                                     title: "Dernière mise à jour: #{hike.last_update_attempt&.strftime('%d/%m/%Y %H:%M') || 'Jamais'}",
+                                                                     data: { turbo: false },
+                                                                     params: { search: params[:search] } do %>
+                                            <i class="icon icon-sync-alt text-sm"></i>
+                                        <% end %>
                                     <% end %>
                                 <% end %>
-                            <% end %>
 
-                            <% show_if_authorized('Hike', 'destroy') do %>
-                                <%= button_to hike_path(hike),
-                                              method: :delete,
-                                              class: "btn btn-outline-dark btn-sm d-inline-flex align-items-center justify-content-center",
-                                              style: "width: 32px; height: 32px;",
-                                              title: "Supprimer",
-                                              form: { style: 'display: inline-block', onsubmit: "return confirmDelete(event, 'ce parcours')" },
-                                              form_class: 'button_to' do %>
-                                    <i class="fas fa-trash"></i>
+                                <%= button_to_if_authorized hike_path(hike),
+                                                            method: :delete,
+                                                            action: :destroy,
+                                                            resource: Hike,
+                                                            class: "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-red-400 hover:bg-red-900/50 hover:text-red-300 transition-all",
+                                                            title: "Supprimer",
+                                                            form: { style: 'display: inline-block', onsubmit: "return confirmDelete(event, 'ce parcours')" },
+                                                            form_class: 'button_to' do %>
+                                    <i class="icon icon-trash text-sm"></i>
                                 <% end %>
-                            <% end %>
-                        </div>
-                    </td>
+                            </div>
+                        </td>
+                    <% end %>
                 </tr>
             <% end %>
             </tbody>
         </table>
     </div>
-<% elsif params[:trail_name].present? || params[:starting_point].present? %>
-    <div class="alert alert-info" role="alert">
-        Aucun résultat trouvé pour votre recherche
+<% elsif params[:search].present? %>
+    <div class="rounded-lg bg-blue-500/10 border border-blue-500/20 p-4 shadow-lg">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <i class="icon icon-info-circle text-blue-400"></i>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium text-blue-300">Aucun résultat trouvé pour votre recherche</p>
+            </div>
+        </div>
     </div>
 <% end %>

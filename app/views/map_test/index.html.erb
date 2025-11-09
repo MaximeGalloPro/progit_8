@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Leaflet Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; padding: 20px; background: #1e293b; color: white; font-family: sans-serif; }
+    #map { height: 500px; width: 100%; border: 2px solid #475569; }
+    .info { margin-bottom: 20px; padding: 15px; background: #334155; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="info">
+    <h1>Test Leaflet Map - Version minimale</h1>
+    <p>Cette page teste Leaflet avec le strict minimum de code.</p>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+    console.log('Initializing test map...');
+    
+    // Configure icons
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: '/assets/marker-icon-2x.png',
+      iconUrl: '/assets/marker-icon.png',
+      shadowUrl: '/assets/marker-shadow.png',
+    });
+
+    // Create map
+    const map = L.map('map').setView([44.0556, 5.1283], 13);
+
+    // Add tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Add a marker
+    const marker = L.marker([44.0556, 5.1283]).addTo(map);
+    marker.bindPopup('Test marker').openPopup();
+
+    console.log('Map initialized successfully');
+  </script>
+</body>
+</html>

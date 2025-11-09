@@ -1,0 +1,144 @@
+fr:
+  hello: "Bonjour le monde"
+
+  hike:
+    difficulty:
+      1: "Très facile"
+      2: "Facile"
+      3: "Moyen"
+      4: "Difficile"
+      5: "Très difficile"
+      undefined: "Non définie"
+      very_easy: "Très facile"
+      easy: "Facile"
+      medium: "Moyen"
+      hard: "Difficile"
+      very_hard: "Très difficile"
+
+  activerecord:
+    models:
+      hike:
+        one: "Randonnée"
+        other: "Randonnées"
+      hike_history:
+        one: "Historique de randonnée"
+        other: "Historiques de randonnées"
+      user:
+        one: "Utilisateur"
+        other: "Utilisateurs"
+
+    attributes:
+      hike:
+        trail_name: "Nom du parcours"
+        starting_point: "Point de départ"
+        distance_km: "Distance (km)"
+        elevation_gain: "Dénivelé +"
+        elevation_loss: "Dénivelé -"
+        altitude_min: "Altitude minimale"
+        altitude_max: "Altitude maximale"
+        difficulty: "Difficulté"
+        carpooling_cost: "Coût covoiturage"
+        openrunner_ref: "Référence OpenRunner"
+
+      hike_history:
+        hike_id: "Randonnée"
+        member_id: "Guide"
+        hiking_date: "Date"
+        departure_time: "Heure de départ"
+        carpooling_cost: "Coût covoiturage"
+
+      user:
+        email: "Email"
+        password: "Mot de passe"
+        role: "Rôle"
+
+    errors:
+      models:
+        hike:
+          attributes:
+            trail_name:
+              blank: "Le nom du parcours ne peut pas être vide"
+            starting_point:
+              blank: "Le point de départ ne peut pas être vide"
+            distance_km:
+              blank: "La distance ne peut pas être vide"
+              not_a_number: "La distance doit être un nombre"
+            elevation_gain:
+              blank: "Le dénivelé positif ne peut pas être vide"
+              not_a_number: "Le dénivelé positif doit être un nombre"
+            difficulty:
+              blank: "La difficulté ne peut pas être vide"
+              inclusion: "La difficulté doit être comprise entre 1 et 5"
+
+        hike_history:
+          attributes:
+            hike_id:
+              blank: "La randonnée doit être sélectionnée"
+            member_id:
+              blank: "Le guide doit être sélectionné"
+            hiking_date:
+              blank: "La date ne peut pas être vide"
+            departure_time:
+              blank: "L'heure de départ ne peut pas être vide"
+
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+
+    day_names:
+      - dimanche
+      - lundi
+      - mardi
+      - mercredi
+      - jeudi
+      - vendredi
+      - samedi
+
+    abbr_day_names:
+      - dim
+      - lun
+      - mar
+      - mer
+      - jeu
+      - ven
+      - sam
+
+    month_names:
+      - ~
+      - janvier
+      - février
+      - mars
+      - avril
+      - mai
+      - juin
+      - juillet
+      - août
+      - septembre
+      - octobre
+      - novembre
+      - décembre
+
+    abbr_month_names:
+      - ~
+      - jan
+      - fév
+      - mar
+      - avr
+      - mai
+      - juin
+      - juil
+      - aoû
+      - sep
+      - oct
+      - nov
+      - déc
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d %B %Y %H:%M:%S"
+    am: "am"
+    pm: "pm"

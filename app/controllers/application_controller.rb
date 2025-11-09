@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
     controller_name == 'sessions' ||
     controller_name == 'passwords' ||
     controller_name == 'omniauth_callbacks' ||
+    controller_name == 'map_test' ||
     controller_path == 'rails/health'
   end
 

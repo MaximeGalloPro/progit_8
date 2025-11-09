@@ -1,0 +1,63 @@
+<%# app/views/stats/dashboard.html.erb %>
+<% content_for :head do %>
+    <meta name="turbo-visit-control" content="reload">
+<% end %>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Tableau de bord des randonnées</h1>
+        <%= link_to "← Retour", :back, class: "btn btn-outline-secondary" %>
+    </div>
+
+    <%# Cartes de statistiques %>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="card-title ">Total Randonnées</h6>
+                    <h2 class="card-text"><%= @stats[:total_hikes] %></h2>
+                    <small class="">Sur l'année en cours</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="card-title ">Distance Totale</h6>
+                    <h2 class="card-text"><%= number_with_precision(@stats[:total_distance], precision: 1, separator: '.', delimiter: '') %> km</h2>
+                    <small class="">Distance cumulée</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="card-title ">Dénivelé Total</h6>
+                    <h2 class="card-text"><%= number_with_precision(@stats[:total_elevation], precision: 1, separator: '.', delimiter: '') %> m</h2>
+                    <small class="">Dénivelé cumulé</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="card-title ">Guides Actifs</h6>
+                    <h2 class="card-text"><%= @stats[:active_guides] %></h2>
+                    <small class="">Ce mois-ci</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%= render partial: "chart" %>
+    <% if browser.device.mobile? %>
+        <%= render partial: "list_mobile" %>
+    <% else %>
+        <%= render partial: "list" %>
+    <% end %>
+</div>
+
+

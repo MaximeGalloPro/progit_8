@@ -1,0 +1,93 @@
+<h3>Les 10 derniéres randonnées</h3>
+
+<% if @last_hikes.any? %>
+    <%
+        has_any_permission = can?(:update, Hike) ||
+            can?(:destroy, Hike) ||
+            can?(:read, HikeHistory)
+    %>
+    <div class="table-responsive">
+        <table data-datatable class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Randonnée</th>
+                <th scope="col">Point de départ</th>
+                <th scope="col">Distance (km)</th>
+                <th scope="col">D+ (m)</th>
+                <th scope="col">D- (m)</th>
+                <th scope="col">Alt min (m)</th>
+                <th scope="col">Alt max (m)</th>
+                <th scope="col">Difficulté</th>
+                <th scope="col">Dernière date</th>
+                <th scope="col">Dernier guide</th>
+                <% if has_any_permission %>
+                    <th scope="col">Actions</th>
+                <% end %>
+            </tr>
+            </thead>
+            <tbody>
+            <% @last_hikes.each do |hike| %>
+                <tr>
+                    <td><%= hike.trail_name %></td>
+                    <td><%= hike.starting_point %></td>
+                    <td><%= hike.distance_km %></td>
+                    <td><%= hike.elevation_gain %></td>
+                    <td><%= hike.elevation_loss %></td>
+                    <td><%= hike.altitude_min %></td>
+                    <td><%= hike.altitude_max %></td>
+                    <td><%= hike.difficulty_text %></td>
+                    <td><%= hike.last_hiking_date&.strftime("%d/%m/%Y") %></td>
+                    <td><%= hike['guide_name'] %></td>
+                    <% if has_any_permission %>
+                        <td class="text-nowrap">
+                            <div class="btn-group">
+                                <%= render partial: "roadmap", locals: { hike: hike } %>
+
+                                <%= link_to_if_authorized hike_histories_path(hike_id: hike.id),
+                                            class: "btn btn-outline-dark btn-sm",
+                                            title: "Voir l'historique",
+                                            action: :read,
+                                            resource: HikeHistory do %>
+                                    <i class="icon icon-history"></i>
+                                <% end %>
+
+                                <%= link_to_if_authorized edit_hike_path(hike),
+                                            class: "btn btn-outline-dark btn-sm",
+                                            title: "Editer",
+                                            action: :update,
+                                            resource: Hike do %>
+                                    <i class="icon icon-pen"></i>
+                                <% end %>
+
+                                <% if can?(:update, Hike) %>
+                                    <% if hike.updating? %>
+                                        <button class="btn btn-outline-dark btn-sm" disabled>
+                                            <i class="icon icon-sync-alt spin"></i>
+                                        </button>
+                                    <% elsif hike.openrunner_ref.blank? or hike.openrunner_ref == 0 or hike.openrunner_ref == "0" %>
+                                        <button class="btn btn-outline-dark btn-sm" disabled title="Pas de référence OpenRunner">
+                                            <i class="icon icon-ban text-danger" title="Pas de référence OpenRunner"></i>
+                                        </button>
+                                    <% else %>
+                                        <%= button_to refresh_from_openrunner_hike_path(hike, redirect_path: stats_dashboard_path),
+                                                      class: "btn btn-outline-dark btn-sm",
+                                                      title: "Dernière mise à jour: #{hike.last_update_attempt&.strftime('%d/%m/%Y %H:%M') || 'Jamais'}",
+                                                      data: { turbo: false },
+                                                      params: { search: params[:search] } do %>
+                                            <i class="icon icon-sync-alt"></i>
+                                        <% end %>
+                                    <% end %>
+                                <% end %>
+                            </div>
+                        </td>
+                    <% end %>
+                </tr>
+            <% end %>
+            </tbody>
+        </table>
+    </div>
+<% elsif params[:trail_name].present? || params[:starting_point].present? %>
+    <div class="alert alert-info" role="alert">
+        Aucun résultat trouvé pour votre recherche
+    </div>
+<% end %>

@@ -1,0 +1,437 @@
+/* Keyframe animations */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Base class for all SVG icons */
+.icon {
+  display: inline-block;
+  width: 1.35rem;
+  height: 1.35rem;
+  background-color: currentColor;
+  vertical-align: middle;
+  margin-bottom: 0.13rem;
+}
+
+/* Specific icons using CSS custom properties */
+.icon-chart-line {
+  mask: url("chart-line.svg") no-repeat center / contain;
+  -webkit-mask: url("chart-line.svg") no-repeat center / contain;
+}
+
+.icon-wand-stars {
+  mask: url("wand-stars.svg") no-repeat center / contain;
+  -webkit-mask: url("wand-stars.svg") no-repeat center / contain;
+}
+
+.icon-brain {
+  mask: url("brain.svg") no-repeat center / contain;
+  -webkit-mask: url("brain.svg") no-repeat center / contain;
+}
+
+.icon-building {
+  mask: url("building.svg") no-repeat center / contain;
+  -webkit-mask: url("building.svg") no-repeat center / contain;
+}
+
+.icon-user-friends {
+  mask: url("user-friends.svg") no-repeat center / contain;
+  -webkit-mask: url("user-friends.svg") no-repeat center / contain;
+}
+
+.icon-id-card {
+  mask: url("id-card.svg") no-repeat center / contain;
+  -webkit-mask: url("id-card.svg") no-repeat center / contain;
+}
+
+.icon-user-clock {
+  mask: url("user-clock.svg") no-repeat center / contain;
+  -webkit-mask: url("user-clock.svg") no-repeat center / contain;
+}
+
+.icon-list-alt {
+  mask: url("list-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("list-alt.svg") no-repeat center / contain;
+}
+
+.icon-user {
+  mask: url("user.svg") no-repeat center / contain;
+  -webkit-mask: url("user.svg") no-repeat center / contain;
+}
+
+.icon-cog {
+  mask: url("cog.svg") no-repeat center / contain;
+  -webkit-mask: url("cog.svg") no-repeat center / contain;
+}
+
+.icon-sitemap {
+  mask: url("sitemap.svg") no-repeat center / contain;
+  -webkit-mask: url("sitemap.svg") no-repeat center / contain;
+}
+
+.icon-sign-out-alt {
+  mask: url("sign-out-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("sign-out-alt.svg") no-repeat center / contain;
+}
+
+.icon-sign-in-alt {
+  mask: url("sign-in-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("sign-in-alt.svg") no-repeat center / contain;
+}
+
+.icon-file-import {
+  mask: url("file-import.svg") no-repeat center / contain;
+  -webkit-mask: url("file-import.svg") no-repeat center / contain;
+}
+
+.icon-plus {
+  mask: url("plus.svg") no-repeat center / contain;
+  -webkit-mask: url("plus.svg") no-repeat center / contain;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.icon-pen {
+  mask: url("pen.svg") no-repeat center / contain;
+  -webkit-mask: url("pen.svg") no-repeat center / contain;
+}
+
+.icon-trash {
+  mask: url("trash-can.svg") no-repeat center / contain;
+  -webkit-mask: url("trash-can.svg") no-repeat center / contain;
+}
+
+.icon-eye {
+  mask: url("eye.svg") no-repeat center / contain;
+  -webkit-mask: url("eye.svg") no-repeat center / contain;
+}
+
+.icon-file-export {
+  mask: url("file-export.svg") no-repeat center / contain;
+  -webkit-mask: url("file-export.svg") no-repeat center / contain;
+}
+
+.icon-play {
+  mask: url("play.svg") no-repeat center / contain;
+  -webkit-mask: url("play.svg") no-repeat center / contain;
+}
+
+.icon-search {
+  mask: url("search.svg") no-repeat center / contain;
+  -webkit-mask: url("search.svg") no-repeat center / contain;
+}
+
+.icon-font {
+  mask: url("font.svg") no-repeat center / contain;
+  -webkit-mask: url("font.svg") no-repeat center / contain;
+}
+
+.icon-filter {
+  mask: url("filter.svg") no-repeat center / contain;
+  -webkit-mask: url("filter.svg") no-repeat center / contain;
+}
+
+.icon-star-half-alt {
+  mask: url("star-half-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("star-half-alt.svg") no-repeat center / contain;
+}
+
+.icon-code-branch {
+  mask: url("code-branch.svg") no-repeat center / contain;
+  -webkit-mask: url("code-branch.svg") no-repeat center / contain;
+}
+
+.icon-sync {
+  mask: url("sync.svg") no-repeat center / contain;
+  -webkit-mask: url("sync.svg") no-repeat center / contain;
+}
+
+.icon-save {
+  mask: url("save.svg") no-repeat center / contain;
+  -webkit-mask: url("save.svg") no-repeat center / contain;
+}
+
+.icon-tasks {
+  mask: url("tasks.svg") no-repeat center / contain;
+  -webkit-mask: url("tasks.svg") no-repeat center / contain;
+}
+
+.icon-circle-xmark {
+  mask: url("circle-xmark.svg") no-repeat center / contain;
+  -webkit-mask: url("circle-xmark.svg") no-repeat center / contain;
+}
+
+.icon-info-circle {
+  mask: url("info-circle.svg") no-repeat center / contain;
+  -webkit-mask: url("info-circle.svg") no-repeat center / contain;
+}
+
+.icon-arrow-left {
+  mask: url("arrow-left.svg") no-repeat center / contain;
+  -webkit-mask: url("arrow-left.svg") no-repeat center / contain;
+}
+
+.icon-triangle-exclamation {
+  mask: url("triangle-exclamation.svg") no-repeat center / contain;
+  -webkit-mask: url("triangle-exclamation.svg") no-repeat center / contain;
+}
+
+.icon-chevron-down {
+  mask: url("chevron-down.svg") no-repeat center / contain;
+  -webkit-mask: url("chevron-down.svg") no-repeat center / contain;
+}
+
+.icon-download {
+  mask: url("download.svg") no-repeat center / contain;
+  -webkit-mask: url("download.svg") no-repeat center / contain;
+}
+
+.icon-times {
+  mask: url("times.svg") no-repeat center / contain;
+  -webkit-mask: url("times.svg") no-repeat center / contain;
+}
+
+.icon-database {
+  mask: url("database.svg") no-repeat center / contain;
+  -webkit-mask: url("database.svg") no-repeat center / contain;
+}
+
+.icon-check-circle {
+  mask: url("check-circle.svg") no-repeat center / contain;
+  -webkit-mask: url("check-circle.svg") no-repeat center / contain;
+}
+
+.icon-times-circle {
+  mask: url("times-circle.svg") no-repeat center / contain;
+  -webkit-mask: url("times-circle.svg") no-repeat center / contain;
+}
+
+.icon-envelope {
+  mask: url("envelope.svg") no-repeat center / contain;
+  -webkit-mask: url("envelope.svg") no-repeat center / contain;
+}
+
+.icon-phone {
+  mask: url("phone.svg") no-repeat center / contain;
+  -webkit-mask: url("phone.svg") no-repeat center / contain;
+}
+
+.icon-file-alt {
+  mask: url("file-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("file-alt.svg") no-repeat center / contain;
+}
+
+.icon-link {
+  mask: url("link.svg") no-repeat center / contain;
+  -webkit-mask: url("link.svg") no-repeat center / contain;
+}
+
+.icon-shield-alt {
+  mask: url("shield-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("shield-alt.svg") no-repeat center / contain;
+}
+
+.icon-check {
+  mask: url("check.svg") no-repeat center / contain;
+  -webkit-mask: url("check.svg") no-repeat center / contain;
+}
+
+.icon-tags {
+  mask: url("tags.svg") no-repeat center / contain;
+  -webkit-mask: url("tags.svg") no-repeat center / contain;
+}
+
+.icon-chevron-left {
+  mask: url("chevron-left.svg") no-repeat center / contain;
+  -webkit-mask: url("chevron-left.svg") no-repeat center / contain;
+}
+
+.icon-list {
+  mask: url("list-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("list-alt.svg") no-repeat center / contain;
+}
+
+.icon-chevron-right {
+  mask: url("chevron-right.svg") no-repeat center / contain;
+  -webkit-mask: url("chevron-right.svg") no-repeat center / contain;
+}
+
+.icon-ban {
+  mask: url("ban.svg") no-repeat center / contain;
+  -webkit-mask: url("ban.svg") no-repeat center / contain;
+}
+
+.icon-hand-pointer {
+  mask: url("hand-pointer.svg") no-repeat center / contain;
+  -webkit-mask: url("hand-pointer.svg") no-repeat center / contain;
+}
+
+.icon-circle-info {
+  mask: url("info-circle.svg") no-repeat center / contain;
+  -webkit-mask: url("info-circle.svg") no-repeat center / contain;
+}
+
+.icon-clock {
+  mask: url("clock.svg") no-repeat center / contain;
+  -webkit-mask: url("clock.svg") no-repeat center / contain;
+}
+
+.icon-trophy {
+  mask: url("trophy.svg") no-repeat center / contain;
+  -webkit-mask: url("trophy.svg") no-repeat center / contain;
+}
+
+.icon-code {
+  mask: url("code.svg") no-repeat center / contain;
+  -webkit-mask: url("code.svg") no-repeat center / contain;
+}
+
+.icon-choice-decision {
+  mask: url("choice-decision.svg") no-repeat center / contain;
+  -webkit-mask: url("choice-decision.svg") no-repeat center / contain;
+}
+
+.icon-minus {
+  mask: url("minus.svg") no-repeat center / contain;
+  -webkit-mask: url("minus.svg") no-repeat center / contain;
+}
+
+.icon-spinner {
+  mask: url("spinner.svg") no-repeat center / contain;
+  -webkit-mask: url("spinner.svg") no-repeat center / contain;
+  animation: spin 1s linear infinite;
+}
+
+.icon-report {
+  mask: url("report.svg") no-repeat center / contain;
+  -webkit-mask: url("report.svg") no-repeat center / contain;
+}
+
+.icon-flag-empty {
+  mask: url("flag-empty.svg") no-repeat center / contain;
+  -webkit-mask: url("flag-empty.svg") no-repeat center / contain;
+}
+
+.icon-flag-full {
+  mask: url("flag-full.svg") no-repeat center / contain;
+  -webkit-mask: url("flag-full.svg") no-repeat center / contain;
+}
+
+.icon-brain-gear {
+  mask: url("brain-gear.svg") no-repeat center / contain;
+  -webkit-mask: url("brain-gear.svg") no-repeat center / contain;
+}
+
+.icon-robot {
+  mask: url("robot.svg") no-repeat center / contain;
+  -webkit-mask: url("robot.svg") no-repeat center / contain;
+}
+
+.icon-cross {
+  mask: url("cross.svg") no-repeat center / contain;
+  -webkit-mask: url("cross.svg") no-repeat center / contain;
+}
+
+.icon-cross-sqare {
+  mask: url("cross-square.svg") no-repeat center / contain;
+  -webkit-mask: url("cross-square.svg") no-repeat center / contain;
+}
+
+.icon-warning {
+  mask: url("warning.svg") no-repeat center / contain;
+  -webkit-mask: url("warning.svg") no-repeat center / contain;
+}
+
+.icon-reload {
+  mask: url("reload.svg") no-repeat center / contain;
+  -webkit-mask: url("reload.svg") no-repeat center / contain;
+}
+
+.icon-history {
+  mask: url("history.svg") no-repeat center / contain;
+  -webkit-mask: url("history.svg") no-repeat center / contain;
+}
+
+.icon-microchip {
+  mask: url("microchip.svg") no-repeat center / contain;
+  -webkit-mask: url("microchip.svg") no-repeat center / contain;
+}
+
+.icon-arrow-up {
+  mask: url("arrow-up.svg") no-repeat center / contain;
+  -webkit-mask: url("arrow-up.svg") no-repeat center / contain;
+}
+
+.icon-calendar-day {
+  mask: url("calendar-day.svg") no-repeat center / contain;
+  -webkit-mask: url("calendar-day.svg") no-repeat center / contain;
+}
+
+.icon-calendar-plus {
+  mask: url("calendar-plus.svg") no-repeat center / contain;
+  -webkit-mask: url("calendar-plus.svg") no-repeat center / contain;
+}
+
+.icon-car {
+  mask: url("car.svg") no-repeat center / contain;
+  -webkit-mask: url("car.svg") no-repeat center / contain;
+}
+
+.icon-exclamation-circle {
+  mask: url("exclamation-circle.svg") no-repeat center / contain;
+  -webkit-mask: url("exclamation-circle.svg") no-repeat center / contain;
+}
+
+.icon-hiking {
+  mask: url("hiking.svg") no-repeat center / contain;
+  -webkit-mask: url("hiking.svg") no-repeat center / contain;
+}
+
+.icon-map {
+  mask: url("map.svg") no-repeat center / contain;
+  -webkit-mask: url("map.svg") no-repeat center / contain;
+}
+
+.icon-map-marked-alt {
+  mask: url("map-marked-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("map-marked-alt.svg") no-repeat center / contain;
+}
+
+.icon-map-marker-alt {
+  mask: url("map-marker-alt.svg") no-repeat center / contain;
+  -webkit-mask: url("map-marker-alt.svg") no-repeat center / contain;
+}
+
+.icon-mountain {
+  mask: url("mountain.svg") no-repeat center / contain;
+  -webkit-mask: url("mountain.svg") no-repeat center / contain;
+}
+
+.icon-route {
+  mask: url("route.svg") no-repeat center / contain;
+  -webkit-mask: url("route.svg") no-repeat center / contain;
+}
+
+.icon-undo {
+  mask: url("undo.svg") no-repeat center / contain;
+  -webkit-mask: url("undo.svg") no-repeat center / contain;
+}
+
+.icon-users {
+  mask: url("user-friends.svg") no-repeat center / contain;
+  -webkit-mask: url("user-friends.svg") no-repeat center / contain;
+}
+
+.icon-sync-alt {
+  mask: url("sync.svg") no-repeat center / contain;
+  -webkit-mask: url("sync.svg") no-repeat center / contain;
+}
+
+.icon-sync-alt.spin {
+  animation: spin 1s linear infinite;
+}

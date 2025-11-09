@@ -1,71 +1,67 @@
-<div class="container py-4">
-    <div class="card rounded mt-3">
-        <div class="card-header">
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3 text-center">
-                <div class="col">
-                    <div class="stat-item">
-                        <div class="fw-bold mb-1">Distance :</div>
-                        <div id="distance">0 km</div>
-                    </div>
+<% content_for :head do %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<% end %>
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+        <!-- Statistiques -->
+        <div class="bg-slate-700/50 px-6 py-4 border-b border-slate-700">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Distance :</div>
+                    <div id="distance" class="text-lg font-bold text-white">0 km</div>
                 </div>
-                <div class="col">
-                    <div class="stat-item">
-                        <div class="fw-bold mb-1">Dénivelé + :</div>
-                        <div id="elevation-gain">0 m</div>
-                    </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Dénivelé + :</div>
+                    <div id="elevation-gain" class="text-lg font-bold text-white">0 m</div>
                 </div>
-                <div class="col">
-                    <div class="stat-item">
-                        <div class="fw-bold mb-1">Dénivelé - :</div>
-                        <div id="elevation-loss">0 m</div>
-                    </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Dénivelé - :</div>
+                    <div id="elevation-loss" class="text-lg font-bold text-white">0 m</div>
                 </div>
-                <div class="col">
-                    <div class="stat-item">
-                        <div class="fw-bold mb-1">Altitude min :</div>
-                        <div id="min-altitude">0 m</div>
-                    </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Altitude min :</div>
+                    <div id="min-altitude" class="text-lg font-bold text-white">0 m</div>
                 </div>
-                <div class="col">
-                    <div class="stat-item">
-                        <div class="fw-bold mb-1">Altitude max :</div>
-                        <div id="max-altitude">0 m</div>
-                    </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Altitude max :</div>
+                    <div id="max-altitude" class="text-lg font-bold text-white">0 m</div>
                 </div>
             </div>
         </div>
 
-        <div class="card-body">
-            <button type="button" id="locate-user" class="btn btn-outline-primary w-100">
-                Localiser ma position
-            </button>
-            <div id="map-container">
-                <div id="map" data-coordinates='<%= @hike_path&.coordinates %>'></div>
+        <div class="p-6">
+            <!-- Bouton localisation -->
+            <div class="mb-4">
+                <button type="button"
+                        id="locate-user"
+                        class="w-full md:w-auto rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+                    <i class="icon icon-map-marker-alt"></i>
+                    <span>Localiser ma position</span>
+                </button>
             </div>
 
-            <canvas id="elevationChart" width="800" height="200"></canvas>
+            <!-- Carte -->
+            <div id="map-container" class="relative overflow-hidden rounded-lg">
+                <div id="map" class="w-full" data-coordinates='<%= @hike_path&.coordinates %>'></div>
+            </div>
+
+            <!-- Graphique élévation -->
+            <canvas id="elevationChart" width="800" height="200" class="mt-4"></canvas>
         </div>
     </div>
 </div>
 
 <style>
     #map-container {
-        position: relative;
+        border: 1px solid rgb(51 65 85);
         height: 30rem;
-        margin-top: 1rem;
     }
 
     #map {
         height: 100%;
-        width: 100%;
-        position: relative;
-        border-radius: 0.375rem;
-    }
-
-    .stat-item {
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        background-color: rgba(0,0,0,0.03);
     }
 
     @media (max-width: 768px) {
@@ -82,24 +78,36 @@
         chartInstance: null,
         userMarker: null,
 
-
         initialize: function() {
             const mapElement = document.getElementById('map');
             if (!mapElement || this.map) return;
 
+            // Configure Leaflet icon paths
+            delete L.Icon.Default.prototype._getIconUrl;
+            L.Icon.Default.mergeOptions({
+                iconRetinaUrl: '/assets/marker-icon-2x.png',
+                iconUrl: '/assets/marker-icon.png',
+                shadowUrl: '/assets/marker-shadow.png',
+            });
+
             this.map = L.map('map').setView([44.0556, 5.1283], 13);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19,
             }).addTo(this.map);
 
-            // Safely parse coordinates from the data attribute
+            // Invalidate size after short delay
+            setTimeout(() => {
+                this.map.invalidateSize();
+            }, 100);
+
+            // Parse coordinates
             let coordinates;
             try {
                 const coordsData = mapElement.dataset.coordinates;
                 coordinates = coordsData ? JSON.parse(coordsData) : [];
 
-                // Validate that coordinates is an array
                 if (!Array.isArray(coordinates)) {
                     console.error('Coordinates data is not an array:', coordinates);
                     coordinates = [];
@@ -117,10 +125,9 @@
                 coordinates = [];
             }
 
-            // Only proceed if we have valid coordinates
+            // Process coordinates
             if (coordinates.length >= 2) {
                 const points = coordinates.map(coord => {
-                    // Ensure each coordinate is in the correct format
                     if (Array.isArray(coord) && coord.length >= 2) {
                         return [parseFloat(coord[0]), parseFloat(coord[1])];
                     }
@@ -128,7 +135,6 @@
                     return null;
                 }).filter(point => point !== null);
 
-                // Add markers and proceed only if we have valid points
                 if (points.length >= 2) {
                     points.forEach((point, index) => {
                         L.marker(point, {
@@ -144,7 +150,6 @@
                 console.log('Not enough coordinates provided to create a route');
             }
 
-            // Initialize location tracking
             this.initializeLocationTracking();
         },
 
@@ -158,19 +163,17 @@
                         (position) => {
                             const { latitude, longitude } = position.coords;
 
-                            // Update or create user marker
                             if (this.userMarker) {
                                 this.userMarker.setLatLng([latitude, longitude]);
                             } else {
                                 this.userMarker = L.marker([latitude, longitude], {
                                     icon: L.divIcon({
                                         className: 'user-location-marker',
-                                        html: '<div style="background-color: #007bff; width: 15px; height: 15px; border-radius: 50%; border: 2px solid white;"></div>'
+                                        html: '<div style="background-color: #3b82f6; width: 15px; height: 15px; border-radius: 50%; border: 2px solid white;"></div>'
                                     })
                                 }).addTo(this.map);
                             }
 
-                            // Center map on user location
                             this.map.setView([latitude, longitude], 15);
                         },
                         (error) => {
@@ -208,7 +211,7 @@
                     }
 
                     this.currentRoute = L.geoJSON(data, {
-                        style: {color: 'blue', weight: 4}
+                        style: {color: '#3b82f6', weight: 4}
                     }).addTo(this.map);
 
                     const bounds = L.latLngBounds(points);
@@ -229,11 +232,9 @@
                 const altitudes = coordinates.map(coord => coord[2]);
                 const summary = data.features[0].properties.summary;
 
-                // Distance
                 const distance = summary.distance / 1000;
                 document.getElementById('distance').textContent = distance.toFixed(2) + ' km';
 
-                // Dénivelés
                 let elevationGain = 0;
                 let elevationLoss = 0;
 
@@ -249,7 +250,6 @@
                 document.getElementById('elevation-gain').textContent = Math.round(elevationGain) + ' m';
                 document.getElementById('elevation-loss').textContent = Math.round(elevationLoss) + ' m';
 
-                // Altitudes
                 if (altitudes.length > 0) {
                     const minAltitude = Math.round(Math.min(...altitudes));
                     const maxAltitude = Math.round(Math.max(...altitudes));
@@ -283,7 +283,7 @@
                     datasets: [{
                         label: 'Altitude (m)',
                         data: altitudes,
-                        borderColor: 'rgb(75, 192, 192)',
+                        borderColor: 'rgb(255,255,255)',
                         backgroundColor: gradient,
                         borderWidth: 2,
                         tension: 0.4,
@@ -346,7 +346,7 @@
         },
 
         haversineDistance: function(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth's radius in kilometers
+            const R = 6371;
             const toRad = x => (x * Math.PI) / 180;
 
             const dLat = toRad(lat2 - lat1);
@@ -374,9 +374,7 @@
         }
     };
 
-    // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
         window.hikeMap.initialize();
     });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>

@@ -1,10 +1,50 @@
 // map.js
-const map = L.map('map').setView([44.0556, 5.1283], 13);
+// Chart.js is loaded via CDN in the _map.html.erb partial
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+// Wait for DOM to be fully loaded before initializing map
+document.addEventListener('DOMContentLoaded', function() {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) {
+        console.warn('Map element not found on this page');
+        return;
+    }
 
+    // Configure Leaflet icon paths
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+        iconRetinaUrl: '/assets/marker-icon-2x.png',
+        iconUrl: '/assets/marker-icon.png',
+        shadowUrl: '/assets/marker-shadow.png',
+    });
+
+    window.map = L.map('map', {
+        preferCanvas: false,
+        renderer: L.canvas()
+    }).setView([44.0556, 5.1283], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+        minZoom: 1
+    }).addTo(window.map);
+
+    // Use ResizeObserver to handle container size changes
+    const mapContainer = document.getElementById('map-container');
+    if (mapContainer) {
+        const resizeObserver = new ResizeObserver(() => {
+            window.map.invalidateSize();
+        });
+        resizeObserver.observe(mapContainer);
+    }
+
+    // Initial invalidation after short delay
+    setTimeout(() => {
+        window.map.invalidateSize();
+        console.log('Map initialized and sized');
+    }, 100);
+});
+
+const map = window.map;
 const points = [];
 let markers = [];
 let currentRoute;
@@ -51,15 +91,15 @@ async function getRoute(points) {
         }
 
         if (currentRoute) {
-            map.removeLayer(currentRoute);
+            window.map.removeLayer(currentRoute);
         }
 
         currentRoute = L.geoJSON(data, {
             style: {color: 'blue', weight: 4}
-        }).addTo(map);
+        }).addTo(window.map);
 
         const bounds = currentRoute.getBounds();
-        map.fitBounds(bounds);
+        window.map.fitBounds(bounds);
 
         displayRouteStats(data);
     } catch (error) {
@@ -134,7 +174,7 @@ function addPoint(lat, lng, label) {
     const point = [lat, lng];
     points.push(point);
     pointsInput.value = JSON.stringify(points);
-    const marker = L.marker([lat, lng], {title: label}).addTo(map);
+    const marker = L.marker([lat, lng], {title: label}).addTo(window.map);
     markers.push(marker);
     updateCoordinatesField();
 
@@ -155,7 +195,7 @@ function addClosingPoint() {
     points.push(firstPoint);
     const marker = L.marker(firstPoint, {
         title: "Point de départ (fermeture de la boucle)"
-    }).addTo(map);
+    }).addTo(window.map);
     markers.push(marker);
     updateCoordinatesField();
 
@@ -168,14 +208,14 @@ function removeLastPoint() {
     points.pop();
     const marker = markers.pop();
     if (marker) {
-        map.removeLayer(marker);
+        window.map.removeLayer(marker);
     }
     updateCoordinatesField();
 
     if (points.length >= 2) {
         getRoute(points);
     } else if (currentRoute) {
-        map.removeLayer(currentRoute);
+        window.map.removeLayer(currentRoute);
     }
 }
 
@@ -317,18 +357,18 @@ document.getElementById('locate-user').addEventListener('click', () => {
                     iconAnchor: [12, 41],
                     popupAnchor: [1, -34],
                 }),
-            }).addTo(map);
+            }).addTo(window.map);
 
             // Ajoutez un cercle pour représenter la précision
-            const accuracyCircle = L.circle([latitude, longitude], {
+            L.circle([latitude, longitude], {
                 radius: accuracy, // Précision en mètres
                 color: 'blue',
                 fillColor: '#3f72af',
                 fillOpacity: 0.2,
-            }).addTo(map);
+            }).addTo(window.map);
 
             // Centrez la carte sur la position de l'utilisateur
-            map.setView([latitude, longitude], 13);
+            window.map.setView([latitude, longitude], 13);
 
             // Optionnel : afficher une info-bulle avec les détails
             userMarker.bindPopup(`Vous êtes ici.<br>Précision : ±${Math.round(accuracy)} m`).openPopup();
@@ -341,10 +381,14 @@ document.getElementById('locate-user').addEventListener('click', () => {
 });
 
 
-// Event Listeners
-map.on('click', function (e) {
-    const {lat, lng} = e.latlng;
-    addPoint(lat, lng, `Point ${points.length + 1}`);
+// Event Listeners - must wait for map to be initialized
+document.addEventListener('DOMContentLoaded', function() {
+    if (!window.map) return;
+
+    window.map.on('click', function (e) {
+        const {lat, lng} = e.latlng;
+        addPoint(lat, lng, `Point ${points.length + 1}`);
+    });
 });
 
 document.getElementById('undo')?.addEventListener('click', (e) => {
@@ -368,9 +412,9 @@ document.addEventListener('coordinatesLoaded', (event) => {
 
         if (points.length > 0) {
             const bounds = L.latLngBounds(points);
-            map.fitBounds(bounds);
+            window.map.fitBounds(bounds);
         }
     }
 });
 
-console.log("Map loaded");
+console.log("Map script loaded");

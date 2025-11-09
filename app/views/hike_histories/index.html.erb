@@ -29,20 +29,20 @@
                 <%= link_to "https://www.openrunner.com/route-details/#{@hike.openrunner_ref}",
                             class: "btn btn-outline-primary",
                             target: "_blank" do %>
-                    <i class="fas fa-mountain"></i> Voir sur OpenRunner
+                    <i class="icon icon-mountain"></i> Voir sur OpenRunner
                 <% end %>
 
                 <% if @hike.updating? %>
                     <div class="d-inline-flex align-items-center">
                         <button class="btn btn-outline-dark" disabled>
-                            <i class="fas fa-sync-alt fa-spin"></i>
+                            <i class="icon icon-sync-alt spin"></i>
                             <span class="ms-2">Mise à jour en cours...</span>
                         </button>
                     </div>
                 <% elsif @hike.openrunner_ref.blank? || @hike.openrunner_ref.to_i.zero? %>
                     <div class="d-inline-flex align-items-center">
                         <button class="btn btn-outline-danger" disabled>
-                            <i class="fas fa-ban"></i>
+                            <i class="icon icon-ban"></i>
                             <span class="ms-2">Pas de référence OpenRunner</span>
                         </button>
                     </div>
@@ -51,7 +51,7 @@
                         <%= button_to refresh_from_openrunner_hike_path(@hike),
                                       class: "btn btn-outline-dark",
                                       data: { turbo: false } do %>
-                            <i class="fas fa-sync-alt"></i>
+                            <i class="icon icon-sync-alt"></i>
                             <span class="ms-2">Mettre à jour depuis OpenRunner</span>
                         <% end %>
                         <small class="text-muted ms-2">
@@ -88,7 +88,7 @@
                             <%= link_to edit_hike_history_path(history),
                                         class: "btn btn-outline-dark btn-sm",
                                         title: "Editer" do %>
-                                <i class="fas fa-pen"></i>
+                                <i class="icon icon-pen"></i>
                             <% end %>
 
                             <%= button_to hike_history_path(history),
@@ -98,7 +98,7 @@
                                           form: { style: 'display: inline-block',
                                                   onsubmit: "return confirm('Êtes-vous sûr de vouloir supprimer cet historique ?')" },
                                           form_class: 'button_to' do %>
-                                <i class="fas fa-trash"></i>
+                                <i class="icon icon-trash"></i>
                             <% end %>
                         </div>
                     </td>

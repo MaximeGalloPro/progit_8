@@ -22,9 +22,20 @@ Rails.application.routes.draw do
   get "/auth/failure", to: "omniauth_callbacks#failure"
 
   # Hikes
-  resources :hikes
+  resources :hikes do
+      member do
+          post :refresh_from_openrunner
+      end
+      collection do
+          get :fetch_openrunner_details
+      end
+  end
   resources :hike_histories
   resources :hike_paths
+
+  # Map test
+  get "map_test", to: "map_test#index"
+  get "map_test/with_importmap", to: "map_test#with_importmap"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
