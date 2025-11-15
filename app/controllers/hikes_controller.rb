@@ -16,7 +16,7 @@ class HikesController < ApplicationController
     end
 
     def new
-        @hike = Hike.new
+        @hike = Hike.new(difficulty: 3)
         @hike_path = HikePath.new
     end
 

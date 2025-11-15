@@ -1,5 +1,5 @@
 const fetchButton = document.getElementById('fetch_openrunner_data');
-const spinner = document.getElementById('loading_spinner');
+const syncIcon = document.getElementById('sync_icon');
 
 if (fetchButton) {
     fetchButton.addEventListener('click', async function () {
@@ -10,8 +10,8 @@ if (fetchButton) {
             return;
         }
 
-        // UI feedback
-        spinner.classList.remove('d-none');
+        // UI feedback - Make icon spin and disable button
+        syncIcon.classList.add('animate-spin');
         fetchButton.disabled = true;
         console.log("Making request to:", `/hikes/fetch_openrunner_details?openrunner_ref=${openrunnerRef}`);
 
@@ -42,8 +42,8 @@ if (fetchButton) {
             console.error("Fetch error:", error);
             alert('Erreur lors de la récupération des données');
         } finally {
-            // Reset UI
-            spinner.classList.add('d-none');
+            // Reset UI - Stop spinning and enable button
+            syncIcon.classList.remove('animate-spin');
             fetchButton.disabled = false;
         }
     });
