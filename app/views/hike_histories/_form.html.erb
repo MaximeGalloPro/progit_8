@@ -1,0 +1,131 @@
+<%= form_with(model: @hike_history, local: true, class: "space-y-6") do |f| %>
+    <% if @hike_history.errors.any? %>
+        <div class="rounded-lg bg-red-500/10 border border-red-500/20 p-4 shadow-lg">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="icon icon-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-300">
+                        <%= pluralize(@hike_history.errors.count, "erreur") %> :
+                    </h3>
+                    <ul class="mt-2 text-sm text-red-300 list-disc list-inside">
+                        <% @hike_history.errors.full_messages.each do |message| %>
+                            <li><%= message %></li>
+                        <% end %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <% end %>
+
+    <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Randonnée -->
+            <div class="md:col-span-2">
+                <%= f.label :hike_id, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Randonnée <span class="text-red-400">*</span>
+                <% end %>
+                <div class="flex gap-2">
+                    <%= f.collection_select :hike_id,
+                                            @hikes,
+                                            :id,
+                                            ->(hike) { "#{hike.trail_name} (#{hike.starting_point})" },
+                                            { prompt: "Rechercher une randonnée..." },
+                                            { class: "flex-1 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all select2 #{@hike_history.errors[:hike_id].any? ? 'border-red-500 focus:ring-red-500' : ''}" } %>
+                    <%= link_to new_hike_path,
+                                class: "inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all whitespace-nowrap",
+                                title: "Ajouter un nouveau parcours" do %>
+                        <i class="icon icon-plus"></i>
+                    <% end %>
+                </div>
+                <% if @hike_history.errors[:hike_id].any? %>
+                    <p class="mt-2 text-sm text-red-400">
+                        <%= @hike_history.errors[:hike_id].join(', ') %>
+                    </p>
+                <% end %>
+            </div>
+
+            <!-- Guide -->
+            <div class="md:col-span-2">
+                <%= f.label :user_id, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Guide <span class="text-red-400">*</span>
+                <% end %>
+                <div class="flex gap-2">
+                    <%= f.collection_select :user_id,
+                                            @users,
+                                            :id,
+                                            ->(user) { user.name.present? ? "#{user.name} (#{user.email_address})" : user.email_address },
+                                            { prompt: "Sélectionnez un guide..." },
+                                            { id: "hike_history_user_id", class: "flex-1 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:user_id].any? ? 'border-red-500 focus:ring-red-500' : ''}" } %>
+                    <button type="button"
+                            onclick="openGuideModal()"
+                            class="inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all whitespace-nowrap"
+                            title="Ajouter un nouveau guide">
+                        <i class="icon icon-plus"></i>
+                    </button>
+                </div>
+                <% if @hike_history.errors[:user_id].any? %>
+                    <p class="mt-2 text-sm text-red-400">
+                        <%= @hike_history.errors[:user_id].join(', ') %>
+                    </p>
+                <% end %>
+            </div>
+
+            <!-- Date -->
+            <div>
+                <%= f.label :hiking_date, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Date <span class="text-red-400">*</span>
+                <% end %>
+                <%= f.date_field :hiking_date,
+                                 class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:hiking_date].any? ? 'border-red-500 focus:ring-red-500' : ''}" %>
+                <% if @hike_history.errors[:hiking_date].any? %>
+                    <p class="mt-2 text-sm text-red-400">
+                        <%= @hike_history.errors[:hiking_date].join(', ') %>
+                    </p>
+                <% end %>
+            </div>
+
+            <!-- Heure de départ -->
+            <div>
+                <%= f.label :departure_time, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Heure de départ <span class="text-red-400">*</span>
+                <% end %>
+                <%= f.time_field :departure_time,
+                                 class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:departure_time].any? ? 'border-red-500 focus:ring-red-500' : ''}",
+                                 value: begin
+                                            @hike_history.departure_time.present? ?
+                                                @hike_history.departure_time.strftime("%H:%M") :
+                                                Time.current.strftime("%H:%M")
+                                        rescue
+                                            Time.current.strftime("%H:%M")
+                                        end %>
+                <% if @hike_history.errors[:departure_time].any? %>
+                    <p class="mt-2 text-sm text-red-400">
+                        <%= @hike_history.errors[:departure_time]&.join(', ') %>
+                    </p>
+                <% end %>
+            </div>
+
+            <!-- Coût covoiturage -->
+            <div>
+                <%= f.label :carpooling_cost, "Coût covoiturage", class: "block text-sm font-medium text-slate-300 mb-2" %>
+                <%= f.number_field :carpooling_cost,
+                                   step: 0.5,
+                                   placeholder: "0.00",
+                                   class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:carpooling_cost].any? ? 'border-red-500 focus:ring-red-500' : ''}" %>
+                <% if @hike_history.errors[:carpooling_cost].any? %>
+                    <p class="mt-2 text-sm text-red-400">
+                        <%= @hike_history.errors[:carpooling_cost].join(', ') %>
+                    </p>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex gap-3">
+        <%= f.submit "Enregistrer", class: "rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02]" %>
+        <%= link_to "Retour", hikes_path, class: "rounded-lg bg-slate-700 px-6 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all" %>
+    </div>
+<% end %>

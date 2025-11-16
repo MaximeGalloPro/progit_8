@@ -1,0 +1,53 @@
+<% content_for :head do %>
+    <meta name="turbo-visit-control" content="reload">
+    <%= javascript_include_tag "chart.min", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-white">
+            Tableau de bord des randonnées
+        </h1>
+    </div>
+
+    <!-- Cartes de statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+            <div class="text-center">
+                <h6 class="text-sm font-medium text-slate-400 mb-2">Total Randonnées</h6>
+                <h2 class="text-4xl font-bold text-white mb-1"><%= @stats[:total_hikes] %></h2>
+                <small class="text-xs text-slate-400">Sur l'année en cours</small>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+            <div class="text-center">
+                <h6 class="text-sm font-medium text-slate-400 mb-2">Distance Totale</h6>
+                <h2 class="text-4xl font-bold text-white mb-1"><%= number_with_precision(@stats[:total_distance], precision: 1, separator: '.', delimiter: '') %> km</h2>
+                <small class="text-xs text-slate-400">Distance cumulée</small>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+            <div class="text-center">
+                <h6 class="text-sm font-medium text-slate-400 mb-2">Dénivelé Total</h6>
+                <h2 class="text-4xl font-bold text-white mb-1"><%= number_with_precision(@stats[:total_elevation], precision: 1, separator: '.', delimiter: '') %> m</h2>
+                <small class="text-xs text-slate-400">Dénivelé cumulé</small>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+            <div class="text-center">
+                <h6 class="text-sm font-medium text-slate-400 mb-2">Guides Actifs</h6>
+                <h2 class="text-4xl font-bold text-white mb-1"><%= @stats[:active_guides] %></h2>
+                <small class="text-xs text-slate-400">Ce mois-ci</small>
+            </div>
+        </div>
+    </div>
+
+    <%= render partial: "chart" %>
+    <%= render partial: "list" %>
+</div>
+
+

@@ -1,0 +1,286 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+        <h5 class="text-lg font-semibold text-white mb-4">Randonnées par mois</h5>
+        <div class="chart-container">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+
+    <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+        <h5 class="text-lg font-semibold text-white mb-4">Top Guides</h5>
+        <div class="chart-container">
+            <canvas id="guidesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+
+    @media (max-width: 768px) {
+        .chart-container {
+            height: 11rem;
+        }
+    }
+</style>
+
+<script>
+    // Debug logger avec timestamp pour mieux suivre l'ordre des événements
+    const DEBUG = true;
+
+    function log(message, data = null) {
+        if (DEBUG) {
+            const timestamp = new Date().toISOString().substr(11, 8);
+            if (data) {
+                console.log(`[Dashboard Debug ${timestamp}] ${message}:`, data);
+            } else {
+                console.log(`[Dashboard Debug ${timestamp}] ${message}`);
+            }
+        }
+    }
+
+    // Log initial pour vérifier le chargement du script
+    log('Script loaded');
+    log('Window.Chart availability:', typeof window.Chart !== 'undefined');
+
+    // Variable globale pour stocker les instances de graphiques
+    let charts = {
+        monthly: null,
+        guides: null
+    };
+
+    // Fonction pour nettoyer les graphiques existants
+    function cleanupCharts() {
+        log('Cleaning up charts...');
+
+        if (charts.monthly instanceof window.Chart) {
+            log('Destroying monthly chart');
+            charts.monthly.destroy();
+            charts.monthly = null;
+        }
+        if (charts.guides instanceof window.Chart) {
+            log('Destroying guides chart');
+            charts.guides.destroy();
+            charts.guides = null;
+        }
+    }
+
+    // Fonction pour obtenir les options de thème pour Chart.js
+    function getChartThemeOptions() {
+        // Couleurs Tailwind dark theme
+        const textColor = '#cbd5e1';        // slate-300
+        const gridColor = 'rgba(71, 85, 105, 0.3)'; // slate-600 transparent
+        const borderColor = '#475569';      // slate-600
+
+        return {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: textColor,
+                        font: {
+                            size: 12
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#1e293b',  // slate-800
+                    titleColor: '#ffffff',
+                    bodyColor: '#cbd5e1',        // slate-300
+                    borderColor: '#475569',      // slate-600
+                    borderWidth: 1,
+                    padding: 14,
+                    displayColors: true,
+                    usePointStyle: true,
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    boxPadding: 6,
+                    cornerRadius: 6
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: textColor,
+                        padding: 8
+                    },
+                    grid: {
+                        color: gridColor,
+                        drawBorder: false
+                    },
+                    border: {
+                        color: borderColor
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: textColor,
+                        padding: 8
+                    },
+                    grid: {
+                        color: gridColor,
+                        drawBorder: false
+                    },
+                    border: {
+                        color: borderColor
+                    }
+                }
+            }
+        };
+    }
+
+    // Fonction pour initialiser les graphiques
+    function initializeCharts() {
+        log('Initializing charts...');
+        log('Window.Chart availability:', typeof window.Chart !== 'undefined');
+
+        // Vérifier si Chart.js est chargé
+        if (typeof window.Chart === 'undefined') {
+            console.error('Chart.js not loaded');
+            return;
+        }
+
+        // Nettoyer les graphiques existants
+        cleanupCharts();
+
+        const chartOptions = getChartThemeOptions();
+        const accentColor = '#3b82f6'; // blue-500 Tailwind
+
+        // Récupérer et logger l'état des éléments canvas
+        const monthlyChartEl = document.getElementById('monthlyChart');
+        const guidesChartEl = document.getElementById('guidesChart');
+
+        log('Canvas elements state:', {
+            monthlyChart: {
+                exists: !!monthlyChartEl,
+                parentNode: monthlyChartEl?.parentNode?.tagName,
+                width: monthlyChartEl?.width,
+                height: monthlyChartEl?.height
+            },
+            guidesChart: {
+                exists: !!guidesChartEl,
+                parentNode: guidesChartEl?.parentNode?.tagName,
+                width: guidesChartEl?.width,
+                height: guidesChartEl?.height
+            }
+        });
+
+        if (monthlyChartEl) {
+            try {
+                log('Creating monthly chart');
+                charts.monthly = new window.Chart(monthlyChartEl, {
+                    type: 'line',
+                    data: {
+                        labels: <%= raw @stats[:monthly_stats].keys %>,
+                        datasets: [{
+                            label: 'Nombre de randonnées',
+                            data: <%= raw @stats[:monthly_stats].values %>,
+                            borderColor: accentColor,
+                            backgroundColor: accentColor + '20', // Version transparente
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: chartOptions
+                });
+                log('Monthly chart created successfully');
+            } catch (error) {
+                console.error('Error creating monthly chart:', error);
+            }
+        }
+
+        if (guidesChartEl) {
+            try {
+                log('Creating guides chart');
+                charts.guides = new window.Chart(guidesChartEl, {
+                    type: 'bar',
+                    data: {
+                        labels: <%= raw @stats[:guide_stats].keys.reject(&:blank?) %>,
+                        datasets: [{
+                            label: 'Randonnées guidées',
+                            data: <%= raw @stats[:guide_stats].values %>,
+                            backgroundColor: accentColor + '80', // Version semi-transparente
+                            borderColor: accentColor,
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            hoverBackgroundColor: accentColor
+                        }]
+                    },
+                    options: chartOptions
+                });
+                log('Guides chart created successfully');
+            } catch (error) {
+                console.error('Error creating guides chart:', error);
+            }
+        }
+    }
+
+    // Fonction pour s'assurer que le code est exécuté après chaque navigation Turbo
+    function setupCharts() {
+        log('Setting up charts...');
+        // Vérifie si le script Chart.js est encore en cours de chargement
+        if (typeof window.Chart === 'undefined') {
+            log('Chart.js not loaded yet, checking script tags...');
+            // Vérifie si le script est présent dans le DOM
+            const chartScripts = document.querySelectorAll('script[src*="chart"]');
+            log('Found Chart.js script tags:', chartScripts.length);
+        }
+        initializeCharts();
+    }
+
+    // Utilisation d'une fonction d'initialisation globale
+    window.initDashboardCharts = function() {
+        log('Global initialization called');
+        setupCharts();
+    };
+
+    // Écouteurs d'événements pour Turbo et chargement initial
+    document.addEventListener('turbo:load', () => {
+        log('turbo:load event fired');
+        window.initDashboardCharts();
+    });
+
+    document.addEventListener('turbo:render', () => {
+        log('turbo:render event fired');
+        window.initDashboardCharts();
+    });
+
+    document.addEventListener('turbo:before-render', () => {
+        log('turbo:before-render event fired');
+        cleanupCharts();
+    });
+
+    // Écouteur pour le changement de thème
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('change', function() {
+                // Recréer les graphiques avec les nouvelles options de thème
+                initializeCharts();
+            });
+        }
+    });
+
+    // S'assurer que l'initialisation se fait même si turbo:load ne se déclenche pas
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.initDashboardCharts);
+    } else {
+        window.initDashboardCharts();
+    }
+</script>

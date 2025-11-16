@@ -1,10 +1,10 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
     <h2 class="mt-10 text-center text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-      Sign in to your account
+      <%= t('.title') %>
     </h2>
     <p class="mt-2 text-center text-sm text-slate-400">
-      Welcome back! Please enter your credentials
+      <%= t('.subtitle') %>
     </p>
   </div>
 
@@ -12,7 +12,7 @@
     <div class="bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
       <%= form_with url: session_path, class: "space-y-6" do |form| %>
         <div>
-          <%= form.label :email_address, "Email address", class: "block text-sm font-medium text-slate-300 mb-2" %>
+          <%= form.label :email_address, t('.email_label'), class: "block text-sm font-medium text-slate-300 mb-2" %>
           <%= form.email_field :email_address,
               required: true,
               autofocus: true,
@@ -24,8 +24,8 @@
 
         <div>
           <div class="flex items-center justify-between mb-2">
-            <%= form.label :password, "Password", class: "block text-sm font-medium text-slate-300" %>
-            <%= link_to "Forgot password?", new_password_path, class: "text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors" %>
+            <%= form.label :password, t('.password_label'), class: "block text-sm font-medium text-slate-300" %>
+            <%= link_to t('.forgot_password'), new_password_path, class: "text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors" %>
           </div>
           <%= form.password_field :password,
               required: true,
@@ -36,7 +36,7 @@
         </div>
 
         <div>
-          <%= form.submit "Sign in", class: "w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:from-blue-500 hover:to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all hover:scale-[1.02] cursor-pointer" %>
+          <%= form.submit t('.sign_in'), class: "w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:from-blue-500 hover:to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all hover:scale-[1.02] cursor-pointer" %>
         </div>
       <% end %>
 
@@ -46,7 +46,7 @@
             <div class="w-full border-t border-slate-700"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="bg-slate-800 px-3 text-slate-400">Or continue with</span>
+            <span class="bg-slate-800 px-3 text-slate-400"><%= t('.or_continue') %></span>
           </div>
         </div>
 
@@ -61,6 +61,13 @@
             <span class="text-sm font-semibold">Google</span>
           <% end %>
         </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-400">
+          <%= t('.no_account') %>
+          <%= link_to t('.create_account'), new_user_path, class: "font-medium text-blue-400 hover:text-blue-300 transition-colors" %>
+        </p>
       </div>
     </div>
   </div>

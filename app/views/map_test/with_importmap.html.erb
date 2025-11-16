@@ -1,0 +1,67 @@
+<div class="mx-auto max-w-7xl px-4 py-6">
+  <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8 mb-6">
+    <h1 class="text-2xl font-bold text-white mb-4">Test Leaflet Map - Avec importmap</h1>
+    <p class="text-slate-300">Cette page teste Leaflet via importmap Rails (comme la vraie page).</p>
+  </div>
+
+  <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8">
+    <div id="map-container" class="relative overflow-hidden rounded-lg">
+      <div id="map" class="w-full"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #map-container {
+    height: 30rem;
+  }
+  #map {
+    height: 100%;
+  }
+</style>
+
+<script type="module">
+  console.log('Test page - waiting for DOMContentLoaded');
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded fired');
+    
+    const mapElement = document.getElementById('map');
+    if (!mapElement) {
+      console.error('Map element not found!');
+      return;
+    }
+    
+    console.log('Map element found, initializing...');
+    
+    // Configure icons
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: '/assets/marker-icon-2x.png',
+      iconUrl: '/assets/marker-icon.png',
+      shadowUrl: '/assets/marker-shadow.png',
+    });
+
+    // Create map
+    const testMap = L.map('map').setView([44.0556, 5.1283], 13);
+    console.log('Map created');
+
+    // Add tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(testMap);
+    console.log('Tiles added');
+
+    // Add marker
+    const marker = L.marker([44.0556, 5.1283]).addTo(testMap);
+    marker.bindPopup('Test marker').openPopup();
+    console.log('Marker added');
+
+    // Invalidate size after short delay
+    setTimeout(() => {
+      testMap.invalidateSize();
+      console.log('Map size invalidated');
+    }, 100);
+  });
+</script>

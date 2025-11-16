@@ -65,6 +65,14 @@ class User < ApplicationRecord
     )
   end
 
+  def avatar_url_with_size(size = 200)
+    return nil unless avatar_url.present?
+
+    # Google profile images have a size parameter (=sXX-c)
+    # Replace it with the desired size
+    avatar_url.gsub(/=s\d+-c$/, "=s#{size}-c")
+  end
+
   private
 
   def password_validation_required?

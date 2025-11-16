@@ -1,0 +1,124 @@
+<% content_for :head do %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<% end %>
+
+<div class="space-y-6">
+    <!-- Messages d'erreur -->
+    <% if @hike_path&.errors&.any? %>
+        <div class="rounded-lg bg-red-500/10 border border-red-500/20 p-4 shadow-lg">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="icon icon-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-300">
+                        <%= pluralize(@hike_path&.errors&.count, "erreur") %> :
+                    </h3>
+                    <ul class="mt-2 text-sm text-red-300 list-disc list-inside">
+                        <% @hike_path&.errors&.full_messages.each do |message| %>
+                            <li><%= message %></li>
+                        <% end %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <% end %>
+
+    <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+        <!-- Statistiques -->
+        <div class="bg-slate-700/50 px-6 py-4 border-b border-slate-700">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Distance :</div>
+                    <div id="distance" class="text-lg font-bold text-white">0 km</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Dénivelé + :</div>
+                    <div id="elevation-gain" class="text-lg font-bold text-white">0 m</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Dénivelé - :</div>
+                    <div id="elevation-loss" class="text-lg font-bold text-white">0 m</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Altitude min :</div>
+                    <div id="min-altitude" class="text-lg font-bold text-white">0 m</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-sm font-medium text-slate-300 mb-1">Altitude max :</div>
+                    <div id="max-altitude" class="text-lg font-bold text-white">0 m</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <!-- Contrôles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                <div>
+                    <button type="button"
+                            id="locate-user"
+                            class="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+                        <i class="icon icon-map-marker-alt"></i>
+                        <span>Localiser ma position</span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-center md:justify-start">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox"
+                               role="switch"
+                               id="closeLoopCheckbox"
+                               checked
+                               class="w-11 h-6 bg-slate-600 rounded-full appearance-none cursor-pointer relative
+                                      checked:bg-blue-500 transition-colors
+                                      after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                      after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-transform
+                                      checked:after:translate-x-5"/>
+                        <span class="text-sm font-medium text-slate-300">
+                            Activer la fermeture de la boucle
+                        </span>
+                    </label>
+                </div>
+                <div>
+                    <button type="button"
+                            id="undo"
+                            class="w-full rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all flex items-center justify-center gap-2">
+                        <i class="icon icon-undo"></i>
+                        <span>Supprimer le dernier point</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Carte -->
+            <div id="map-container" class="relative mt-4 overflow-hidden rounded-lg">
+                <div id="map" class="w-full"></div>
+            </div>
+
+            <!-- Graphique élévation -->
+            <canvas id="elevationChart" width="800" height="200" class="hidden"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    #map-container {
+        border: 1px solid rgb(51 65 85); /* border-slate-700 */
+        height: 30rem;
+    }
+
+    #map {
+        height: 100%;
+    }
+
+    .custom-div-icon {
+        background: none;
+        border: none;
+    }
+
+    @media (max-width: 768px) {
+        #map-container {
+            height: 25rem;
+        }
+    }
+</style>

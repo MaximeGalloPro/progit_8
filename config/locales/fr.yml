@@ -1,0 +1,243 @@
+fr:
+  hello: "Bonjour le monde"
+
+  hike:
+    difficulty:
+      1: "Très facile"
+      2: "Facile"
+      3: "Moyen"
+      4: "Difficile"
+      5: "Très difficile"
+      undefined: "Non définie"
+      very_easy: "Très facile"
+      easy: "Facile"
+      medium: "Moyen"
+      hard: "Difficile"
+      very_hard: "Très difficile"
+
+  activerecord:
+    models:
+      hike:
+        one: "Randonnée"
+        other: "Randonnées"
+      hike_history:
+        one: "Historique de randonnée"
+        other: "Historiques de randonnées"
+      user:
+        one: "Utilisateur"
+        other: "Utilisateurs"
+
+    attributes:
+      hike:
+        trail_name: "Nom du parcours"
+        starting_point: "Point de départ"
+        distance_km: "Distance (km)"
+        elevation_gain: "Dénivelé +"
+        elevation_loss: "Dénivelé -"
+        altitude_min: "Altitude minimale"
+        altitude_max: "Altitude maximale"
+        difficulty: "Difficulté"
+        carpooling_cost: "Coût covoiturage"
+        openrunner_ref: "Référence OpenRunner"
+
+      hike_history:
+        hike_id: "Randonnée"
+        user_id: "Guide"
+        hiking_date: "Date"
+        departure_time: "Heure de départ"
+        carpooling_cost: "Coût covoiturage"
+
+      user:
+        email_address: "Email"
+        email: "Email"
+        password: "Mot de passe"
+        role: "Rôle"
+        name: "Nom complet"
+        nickname: "Surnom"
+
+    errors:
+      messages:
+        taken: "est déjà utilisé"
+        blank: "ne peut pas être vide"
+        invalid: "est invalide"
+      models:
+        hike:
+          attributes:
+            trail_name:
+              blank: "Le nom du parcours ne peut pas être vide"
+            starting_point:
+              blank: "Le point de départ ne peut pas être vide"
+            distance_km:
+              blank: "La distance ne peut pas être vide"
+              not_a_number: "La distance doit être un nombre"
+            elevation_gain:
+              blank: "Le dénivelé positif ne peut pas être vide"
+              not_a_number: "Le dénivelé positif doit être un nombre"
+            difficulty:
+              blank: "La difficulté ne peut pas être vide"
+              inclusion: "La difficulté doit être comprise entre 1 et 5"
+
+        hike_history:
+          attributes:
+            hike_id:
+              blank: "La randonnée doit être sélectionnée"
+            user_id:
+              blank: "Le guide doit être sélectionné"
+            hiking_date:
+              blank: "La date ne peut pas être vide"
+            departure_time:
+              blank: "L'heure de départ ne peut pas être vide"
+
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+
+    day_names:
+      - dimanche
+      - lundi
+      - mardi
+      - mercredi
+      - jeudi
+      - vendredi
+      - samedi
+
+    abbr_day_names:
+      - dim
+      - lun
+      - mar
+      - mer
+      - jeu
+      - ven
+      - sam
+
+    month_names:
+      - ~
+      - janvier
+      - février
+      - mars
+      - avril
+      - mai
+      - juin
+      - juillet
+      - août
+      - septembre
+      - octobre
+      - novembre
+      - décembre
+
+    abbr_month_names:
+      - ~
+      - jan
+      - fév
+      - mar
+      - avr
+      - mai
+      - juin
+      - juil
+      - aoû
+      - sep
+      - oct
+      - nov
+      - déc
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d %B %Y %H:%M:%S"
+    am: "am"
+    pm: "pm"
+
+  hikes:
+    create:
+      success: "Le parcours a été créé avec succès."
+    update:
+      success: "Le parcours a été mis à jour avec succès."
+    destroy:
+      success: "Le parcours a été supprimé avec succès."
+
+  hike_histories:
+    create:
+      success: "La randonnée a été créée avec succès."
+    update:
+      success: "La randonnée a été mise à jour avec succès."
+    destroy:
+      success: "La randonnée a été supprimée avec succès."
+
+  sessions:
+    new:
+      title: "Connexion à votre compte"
+      subtitle: "Bienvenue ! Veuillez entrer vos identifiants"
+      email_label: "Adresse email"
+      password_label: "Mot de passe"
+      forgot_password: "Mot de passe oublié ?"
+      sign_in: "Se connecter"
+      or_continue: "Ou continuer avec"
+      no_account: "Vous n'avez pas de compte ?"
+      create_account: "Créer un compte"
+
+  users:
+    new:
+      title: "Créer votre compte"
+      subtitle: "Commencez à suivre vos aventures de randonnée"
+      name_label: "Nom complet"
+      email_label: "Adresse email"
+      password_label: "Mot de passe"
+      create_button: "Créer un compte"
+      already_have_account: "Vous avez déjà un compte ?"
+      sign_in: "Se connecter"
+    show:
+      welcome_back: "Bon retour,"
+      profile_settings: "Paramètres du profil"
+      nickname_label: "Surnom"
+      save_button: "Enregistrer"
+      change_password: "Changer le mot de passe"
+      change_password_help: "Modifiez votre mot de passe pour la connexion email/mot de passe."
+      set_password_warning: "⚠️ Définir un mot de passe (Requis pour dissocier Google)"
+      set_password_help: "Vous devez définir un mot de passe avant de pouvoir dissocier votre compte Google."
+      password_label: "Mot de passe"
+      account_information: "Informations du compte"
+      full_name: "Nom complet"
+      email_address: "Adresse email"
+      account_type: "Type de compte"
+      google_account: "Compte Google"
+      email_password: "Email/Mot de passe"
+      unlink_google: "Dissocier Google"
+      link_google: "Lier le compte Google"
+      confirm_unlink_google: "Êtes-vous sûr de vouloir dissocier votre compte Google ?"
+      warning_set_password_to_unlink: "⚠️ Définissez un mot de passe d'abord pour dissocier votre compte Google"
+      role: "Rôle"
+      administrator: "Administrateur"
+      moderator: "Modérateur"
+      user: "Utilisateur"
+      danger_zone: "Zone dangereuse"
+      sign_out: "Se déconnecter"
+      delete_account: "Supprimer le compte"
+      confirm_delete: "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible."
+
+  passwords:
+    new:
+      title: "Mot de passe oublié ?"
+      subtitle: "Entrez votre adresse email et nous vous enverrons les instructions de réinitialisation"
+      email_label: "Adresse email"
+      send_button: "Envoyer les instructions"
+      back_to_sign_in: "Retour à la connexion"
+
+  flash:
+    omniauth_callbacks:
+      google_success: "Connexion réussie avec Google !"
+      link_success: "Compte Google lié avec succès !"
+      link_failure: "Échec de la liaison du compte Google."
+      sign_in_failure: "Échec de la connexion avec Google. Veuillez réessayer."
+      auth_failure: "Échec de l'authentification : %{message}"
+    users:
+      account_created: "Compte créé avec succès !"
+      profile_updated: "Profil mis à jour avec succès."
+      account_deleted: "Votre compte a été supprimé."
+      google_unlinked: "Compte Google dissocié avec succès."
+      google_unlinked_logout: "Compte Google dissocié. Veuillez vous connecter avec votre mot de passe."
+      unlink_failure: "Échec de la dissociation du compte Google."
+      set_password_first: "Vous devez définir un mot de passe avant de dissocier votre compte Google."
+      must_be_signed_in: "Vous devez être connecté."

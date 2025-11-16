@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 @layer utilities {
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   @keyframes slide-in {
     from {
       transform: translateX(100%);
@@ -23,11 +32,19 @@
     }
   }
 
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
   .animate-slide-in {
     animation: slide-in 0.3s ease-out;
   }
 
   .animate-slide-out {
     animation: slide-out 0.3s ease-in forwards;
+  }
+
+  .d-none {
+    display: none !important;
   }
 }

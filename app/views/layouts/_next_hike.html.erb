@@ -1,0 +1,68 @@
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+    <% todays_hike = Hike.todays_hike %>
+    <% if todays_hike %>
+        <div class="bg-slate-800/50 rounded-lg border border-slate-700/50 p-4 mb-6">
+            <div class="flex items-center justify-between gap-4">
+                <%# Partie gauche : Icône + Date + Badge %>
+                <div class="flex items-center gap-3">
+                    <i class="icon icon-calendar-day text-blue-400 text-lg"></i>
+                    <div class="flex items-center gap-2">
+                        <% if todays_hike.hiking_date.present? %>
+                            <span class="text-white font-medium whitespace-nowrap">
+                                <%= l(todays_hike.hiking_date, format: :long) %>
+                            </span>
+                        <% end %>
+                        <% if todays_hike&.difficulty_text.present? %>
+                            <span class="inline-flex items-center rounded-md bg-blue-500/20 px-2 py-0.5 text-xs font-medium text-blue-300 border border-blue-500/30">
+                                <%= todays_hike.difficulty_text %>
+                            </span>
+                        <% end %>
+                    </div>
+                </div>
+
+                <%# Partie centrale : Informations compactes %>
+                <div class="flex items-center gap-4 text-sm text-slate-300 flex-wrap">
+                    <% if todays_hike.starting_point.present? %>
+                        <span class="whitespace-nowrap"><i class="icon icon-map-marker-alt text-slate-500 text-xs"></i> <%= todays_hike.starting_point %></span>
+                    <% end %>
+                    <% if todays_hike.departure_time.present? %>
+                        <span class="whitespace-nowrap"><i class="icon icon-clock text-slate-500 text-xs"></i> <%= todays_hike.departure_time %></span>
+                    <% end %>
+                    <% if todays_hike.last_guide_name.present? %>
+                        <span class="whitespace-nowrap"><i class="icon icon-user text-slate-500 text-xs"></i> <%= todays_hike.last_guide_name %></span>
+                    <% end %>
+                    <% if todays_hike.distance_km.present? %>
+                        <span class="whitespace-nowrap"><i class="icon icon-route text-slate-500 text-xs"></i> <%= todays_hike.distance_km %> km</span>
+                    <% end %>
+                    <% if todays_hike.elevation_gain.present? %>
+                        <span class="whitespace-nowrap"><i class="icon icon-mountain text-slate-500 text-xs"></i> <%= todays_hike.elevation_gain %>m D+</span>
+                    <% end %>
+                    <% carpooling = todays_hike.try(:history_carpooling_cost) || todays_hike.carpooling_cost %>
+                    <% if carpooling.present? && carpooling > 0 %>
+                        <span class="whitespace-nowrap"><i class="icon icon-car text-slate-500 text-xs"></i> <%= carpooling %> €</span>
+                    <% end %>
+                </div>
+
+                <%# Partie droite : Boutons d'action compacts %>
+                <div class="flex gap-2 flex-shrink-0">
+                    <% if todays_hike.try(:history_id).present? %>
+                        <%= link_to edit_hike_history_path(todays_hike.history_id),
+                                    class: "p-2 rounded-lg bg-slate-700/50 text-slate-300 border border-slate-600/50 hover:bg-slate-600 transition-all",
+                                    title: "Modifier" do %>
+                            <i class="icon icon-pen"></i>
+                        <% end %>
+                    <% end %>
+                    <% if todays_hike.openrunner_ref.present? && todays_hike.openrunner_ref != "0" %>
+                        <%= link_to "https://www.openrunner.com/route-details/#{todays_hike.openrunner_ref}",
+                                    class: "px-3 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-500 transition-all flex items-center gap-1.5",
+                                    target: "_blank",
+                                    title: "Voir sur OpenRunner" do %>
+                            <i class="icon icon-map text-sm"></i>
+                            <span>OpenRunner</span>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    <% end %>
+</div>
