@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # app/jobs/update_hike_from_openrunner_job.rb
-require 'capybara'
-require 'selenium-webdriver'
+require "capybara"
+require "selenium-webdriver"
 
 # Job responsible for updating hike information by scraping data from OpenRunner.com
 # This job performs web scraping using Capybara with headless Chrome to fetch
@@ -24,11 +24,11 @@ class UpdateHikeFromOpenrunnerJob < ApplicationJob
     queue_as :default
 
     SCRAPING_CONFIG = {
-        'Distance' => { key: :distance_km, transform: ->(val) { val.tr(',', '.').to_f } },
-        'Dénivelé +' => { key: :elevation_gain, transform: ->(val) { val.to_i } },
-        'Dénivelé -' => { key: :elevation_loss, transform: ->(val) { val.to_i } },
-        'Altitude min.' => { key: :altitude_min, transform: ->(val) { val.to_i } },
-        'Altitude max.' => { key: :altitude_max, transform: ->(val) { val.to_i } }
+        "Distance" => { key: :distance_km, transform: ->(val) { val.tr(",", ".").to_f } },
+        "Dénivelé +" => { key: :elevation_gain, transform: ->(val) { val.to_i } },
+        "Dénivelé -" => { key: :elevation_loss, transform: ->(val) { val.to_i } },
+        "Altitude min." => { key: :altitude_min, transform: ->(val) { val.to_i } },
+        "Altitude max." => { key: :altitude_max, transform: ->(val) { val.to_i } }
     }.freeze
 
     def perform(hike)
@@ -52,7 +52,7 @@ class UpdateHikeFromOpenrunnerJob < ApplicationJob
     def setup_capybara
         Capybara.default_driver = :selenium_headless
         Capybara.javascript_driver = :selenium_headless
-        Capybara.app_host = 'https://www.openrunner.com'
+        Capybara.app_host = "https://www.openrunner.com"
     end
 
     def fetch_and_update_hike_data(browser, hike)
@@ -65,8 +65,8 @@ class UpdateHikeFromOpenrunnerJob < ApplicationJob
 
     def collect_hike_updates(browser)
         SCRAPING_CONFIG.each_with_object({}) do |(label, config), updates|
-            element = browser.find('.or-parcours-info-block', text: label)
-            value = element.find('.or-parcours-info-text').text
+            element = browser.find(".or-parcours-info-block", text: label)
+            value = element.find(".or-parcours-info-text").text
             updates[config[:key]] = config[:transform].call(value)
         rescue Capybara::ElementNotFound => e
             Rails.logger.warn { "⚠️ Failed to find element '#{label}': #{e.message}" }
@@ -81,7 +81,7 @@ class UpdateHikeFromOpenrunnerJob < ApplicationJob
             Rails.logger.info { "✅ Successfully updated hike with: #{updates}" }
         else
             hike.update(updating: false, last_update_attempt: Time.current)
-            Rails.logger.warn '⚠️ No data found during update'
+            Rails.logger.warn "⚠️ No data found during update"
         end
     end
 

@@ -71,5 +71,5 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   # Disable remote debugger attachment for simpler debugging in Docker
-  ENV['RUBY_DEBUG_NO_RDBG'] = 'true'
+  ENV["RUBY_DEBUG_NO_RDBG"] = "true"
 end

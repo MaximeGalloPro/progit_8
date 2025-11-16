@@ -1,6 +1,6 @@
 class OmniauthCallbacksController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :google_oauth2
-  allow_unauthenticated_access only: [:google_oauth2, :failure]
+  allow_unauthenticated_access only: [ :google_oauth2, :failure ]
   skip_authorization_check
 
   def google_oauth2
@@ -13,10 +13,10 @@ class OmniauthCallbacksController < ApplicationController
 
       if user && user.link_google_account(auth)
         session.delete(:linking_account)
-        redirect_to user_path, notice: t('flash.omniauth_callbacks.link_success')
+        redirect_to user_path, notice: t("flash.omniauth_callbacks.link_success")
       else
         session.delete(:linking_account)
-        redirect_to user_path, alert: t('flash.omniauth_callbacks.link_failure')
+        redirect_to user_path, alert: t("flash.omniauth_callbacks.link_failure")
       end
     else
       # Normal OAuth login flow (auto-links if email exists)
@@ -25,14 +25,14 @@ class OmniauthCallbacksController < ApplicationController
       if user&.persisted?
         start_new_session_for(user)
         session[:login_method] = "google"
-        redirect_to user_path, notice: t('flash.omniauth_callbacks.google_success')
+        redirect_to user_path, notice: t("flash.omniauth_callbacks.google_success")
       else
-        redirect_to new_session_path, alert: t('flash.omniauth_callbacks.sign_in_failure')
+        redirect_to new_session_path, alert: t("flash.omniauth_callbacks.sign_in_failure")
       end
     end
   end
 
   def failure
-    redirect_to new_session_path, alert: t('flash.omniauth_callbacks.auth_failure', message: params[:message])
+    redirect_to new_session_path, alert: t("flash.omniauth_callbacks.auth_failure", message: params[:message])
   end
 end

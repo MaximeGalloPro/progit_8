@@ -29,7 +29,7 @@ class HikesController < ApplicationController
         @hike_path = build_hike_path
 
         if save_hike_with_path
-            redirect_to hikes_path, notice: t('.success')
+            redirect_to hikes_path, notice: t(".success")
         else
             render_new_with_errors
         end
@@ -40,7 +40,7 @@ class HikesController < ApplicationController
         prepare_coordinates
 
         if update_hike_with_path
-            redirect_to hikes_path, notice: t('.success')
+            redirect_to hikes_path, notice: t(".success")
         else
             render :edit, status: :unprocessable_entity
         end
@@ -59,7 +59,7 @@ class HikesController < ApplicationController
     def destroy
         @hike = find_hike
         @hike.destroy
-        redirect_to hikes_path, notice: t('.success')
+        redirect_to hikes_path, notice: t(".success")
     end
 
     private
@@ -86,7 +86,7 @@ class HikesController < ApplicationController
 
     def build_redirect_options
         {
-            notice: t('.updating', name: @hike.trail_name),
+            notice: t(".updating", name: @hike.trail_name),
             search: determine_search_param,
             redirect_path: params[:redirect_path]
         }.compact
@@ -129,9 +129,9 @@ class HikesController < ApplicationController
     end
 
     def prepare_coordinates
-        return unless params[:hike][:coordinates] == '[]'
+        return unless params[:hike][:coordinates] == "[]"
 
-        params[:hike][:coordinates] = ''
+        params[:hike][:coordinates] = ""
     end
 
     def update_hike_with_path
@@ -158,7 +158,7 @@ class HikesController < ApplicationController
     end
 
     def convert_distance_format(params)
-        params[:distance_km].tr!(',', '.') if params[:distance_km].present?
+        params[:distance_km].tr!(",", ".") if params[:distance_km].present?
         params
     end
 

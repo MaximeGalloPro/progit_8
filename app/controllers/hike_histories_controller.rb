@@ -23,7 +23,7 @@ class HikeHistoriesController < ApplicationController
         @hike_history = HikeHistory.new(hike_history_params)
 
         if @hike_history.save
-            redirect_to hikes_path, notice: t('.success')
+            redirect_to hikes_path, notice: t(".success")
         else
             handle_create_error
         end
@@ -33,18 +33,18 @@ class HikeHistoriesController < ApplicationController
 
     def update
         if @hike_history.update(hike_history_params)
-            redirect_to hikes_path, notice: t('.success')
+            redirect_to hikes_path, notice: t(".success")
         else
             handle_update_error
         end
     rescue ActionController::ParameterMissing
-        flash.now[:alert] = t('.invalid_params')
+        flash.now[:alert] = t(".invalid_params")
         render :edit, status: :unprocessable_entity
     end
 
     def destroy
         @hike_history.destroy
-        redirect_to hikes_path, notice: t('.success')
+        redirect_to hikes_path, notice: t(".success")
     end
 
     private
@@ -67,17 +67,17 @@ class HikeHistoriesController < ApplicationController
     end
 
     def handle_create_error
-        flash.now[:alert] = t('.validation_error')
+        flash.now[:alert] = t(".validation_error")
         render :new, status: :unprocessable_entity
     end
 
     def handle_update_error
-        flash.now[:alert] = t('.validation_error')
+        flash.now[:alert] = t(".validation_error")
         render :edit, status: :unprocessable_entity
     end
 
     def handle_invalid_parameters
-        flash.now[:alert] = t('.invalid_params')
+        flash.now[:alert] = t(".invalid_params")
         @hike_history = HikeHistory.new
         render :new, status: :unprocessable_entity
     end

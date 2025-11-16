@@ -1,7 +1,7 @@
 module Admin
   class UsersController < ApplicationController
     before_action :authorize_admin
-    before_action :set_user, only: [:update_role]
+    before_action :set_user, only: [ :update_role ]
 
     def index
       @users = User.all.order(created_at: :desc)

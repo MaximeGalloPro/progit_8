@@ -7,7 +7,7 @@ class Hike < ApplicationRecord
     has_many :hike_histories, dependent: :destroy
     has_one :latest_history,
             -> { order(hiking_date: :desc) },
-            class_name: 'HikeHistory',
+            class_name: "HikeHistory",
             foreign_key: :hike_id,
             dependent: :destroy,
             inverse_of: :hike
@@ -30,7 +30,7 @@ class Hike < ApplicationRecord
     scope :with_latest_history, -> { includes(:latest_history) }
     scope :order_by_latest_date, lambda {
         left_joins(:latest_history)
-            .order('hike_histories.hiking_date DESC')
+            .order("hike_histories.hiking_date DESC")
     }
 
     # Scopes temporels
@@ -49,7 +49,7 @@ class Hike < ApplicationRecord
     scope :past_hikes, lambda {
         joins(:latest_history)
             .where(hike_histories: { hiking_date: ...Date.current })
-            .order('hike_histories.hiking_date DESC')
+            .order("hike_histories.hiking_date DESC")
     }
 
     # Scope de recherche
@@ -66,7 +66,7 @@ class Hike < ApplicationRecord
             end_date = start_date.end_of_month
 
             joins(:latest_history)
-                .where('hike_histories.hiking_date BETWEEN ? AND ?', start_date, end_date)
+                .where("hike_histories.hiking_date BETWEEN ? AND ?", start_date, end_date)
         else
             wild_term = "%#{normalized_term}%"
             where(
@@ -98,8 +98,8 @@ class Hike < ApplicationRecord
         return today_hike if today_hike.present?
 
         today_query
-            .where('hike_histories.hiking_date > ?', Date.current)
-            .order('hike_histories.hiking_date ASC')
+            .where("hike_histories.hiking_date > ?", Date.current)
+            .order("hike_histories.hiking_date ASC")
             .first
     end
 
@@ -110,12 +110,12 @@ class Hike < ApplicationRecord
     # Méthodes d'instance
     def difficulty_text
         case difficulty
-        when 1 then I18n.t('hike.difficulty.very_easy')
-        when 2 then I18n.t('hike.difficulty.easy')
-        when 3 then I18n.t('hike.difficulty.medium')
-        when 4 then I18n.t('hike.difficulty.hard')
-        when 5 then I18n.t('hike.difficulty.very_hard')
-        else I18n.t('hike.difficulty.undefined')
+        when 1 then I18n.t("hike.difficulty.very_easy")
+        when 2 then I18n.t("hike.difficulty.easy")
+        when 3 then I18n.t("hike.difficulty.medium")
+        when 4 then I18n.t("hike.difficulty.hard")
+        when 5 then I18n.t("hike.difficulty.very_hard")
+        else I18n.t("hike.difficulty.undefined")
         end
     end
 
@@ -130,6 +130,6 @@ class Hike < ApplicationRecord
     private
 
     def convert_distance_separator
-        self.distance_km = distance_km.to_s.tr(',', '.') if distance_km.present?
+        self.distance_km = distance_km.to_s.tr(",", ".") if distance_km.present?
     end
 end

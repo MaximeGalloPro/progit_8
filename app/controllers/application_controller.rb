@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
         redirect_to redirect_path, alert: "Vous n'avez pas les permissions nécessaires pour effectuer cette action."
       end
       format.json do
-        render json: { success: false, errors: [exception.message] }, status: :forbidden
+        render json: { success: false, errors: [ exception.message ] }, status: :forbidden
       end
     end
   end
@@ -22,13 +22,13 @@ class ApplicationController < ActionController::Base
   private
 
   def skip_authorization?
-    controller_name == 'sessions' ||
-    controller_name == 'passwords' ||
-    controller_name == 'omniauth_callbacks' ||
-    controller_name == 'map_test' ||
-    controller_name == 'stats' ||
-    controller_name == 'hike_paths' ||
-    controller_path == 'rails/health'
+    controller_name == "sessions" ||
+    controller_name == "passwords" ||
+    controller_name == "omniauth_callbacks" ||
+    controller_name == "map_test" ||
+    controller_name == "stats" ||
+    controller_name == "hike_paths" ||
+    controller_path == "rails/health"
   end
 
   def current_ability

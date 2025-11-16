@@ -4,7 +4,7 @@
 # display of path coordinates, maintains path history in session, and provides
 # validation for path points.
 class HikePathsController < ApplicationController
-    allow_unauthenticated_access only: [:show]
+    allow_unauthenticated_access only: [ :show ]
 
     def show
         @hike_path = HikePath.find_by(id: params[:id])
@@ -29,7 +29,7 @@ class HikePathsController < ApplicationController
     private
 
     def handle_missing_path
-        flash[:alert] = t('.not_found')
+        flash[:alert] = t(".not_found")
         redirect_to hikes_path
     end
 
@@ -48,7 +48,7 @@ class HikePathsController < ApplicationController
     def validate_points
         return true if points.present?
 
-        @hike_path.errors.add(:points, t('.points_required'))
+        @hike_path.errors.add(:points, t(".points_required"))
         false
     end
 
@@ -62,7 +62,7 @@ class HikePathsController < ApplicationController
     end
 
     def handle_successful_save
-        flash[:notice] = t('.success')
+        flash[:notice] = t(".success")
         session[:last_hike_path] = @hike_path.attributes
         redirect_back fallback_location: new_hike_path
     end

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
 
   # User profile and signup
-  resource :user, only: [:new, :create, :show, :update, :destroy] do
+  resource :user, only: [ :new, :create, :show, :update, :destroy ] do
     post :link_google
     delete :unlink_google
   end
@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   # Admin
   namespace :admin do
-    resources :users, only: [:index] do
+    resources :users, only: [ :index ] do
       member do
         patch :update_role
       end

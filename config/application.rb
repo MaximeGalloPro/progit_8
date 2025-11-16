@@ -26,6 +26,6 @@ module App
 
     # Set default locale to French
     config.i18n.default_locale = :fr
-    config.i18n.available_locales = [:fr, :en]
+    config.i18n.available_locales = [ :fr, :en ]
   end
 end

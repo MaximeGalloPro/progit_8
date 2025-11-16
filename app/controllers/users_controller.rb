@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
-  allow_unauthenticated_access only: [:new, :create]
+  allow_unauthenticated_access only: [ :new, :create ]
   skip_load_and_authorize_resource
   skip_authorization_check
 
-  before_action :set_user, except: [:new, :create, :create_guide]
-  before_action :authorize_user, except: [:new, :create]
+  before_action :set_user, except: [ :new, :create, :create_guide ]
+  before_action :authorize_user, except: [ :new, :create ]
 
   def new
     @user = User.new
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     if @user.save
       start_new_session_for(@user)
       session[:login_method] = "password"
-      redirect_to stats_dashboard_path, notice: t('flash.users.account_created')
+      redirect_to stats_dashboard_path, notice: t("flash.users.account_created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -28,7 +28,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to user_path, notice: t('flash.users.profile_updated')
+      redirect_to user_path, notice: t("flash.users.profile_updated")
     else
       render :show, status: :unprocessable_entity
     end
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     reset_authentication
-    redirect_to root_path, notice: t('flash.users.account_deleted')
+    redirect_to root_path, notice: t("flash.users.account_deleted")
   end
 
   def link_google
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
 
   def unlink_google
     unless @user.password_digest.present?
-      redirect_to user_path, alert: t('flash.users.set_password_first') and return
+      redirect_to user_path, alert: t("flash.users.set_password_first") and return
     end
 
     # Check if user logged in with Google
@@ -57,13 +57,13 @@ class UsersController < ApplicationController
       if logged_in_with_google
         # User logged in with Google, need to logout after unlinking
         reset_authentication
-        redirect_to root_path, notice: t('flash.users.google_unlinked_logout')
+        redirect_to root_path, notice: t("flash.users.google_unlinked_logout")
       else
         # User logged in with password, can stay logged in
-        redirect_to user_path, notice: t('flash.users.google_unlinked')
+        redirect_to user_path, notice: t("flash.users.google_unlinked")
       end
     else
-      redirect_to user_path, alert: t('flash.users.unlink_failure')
+      redirect_to user_path, alert: t("flash.users.unlink_failure")
     end
   end
 
@@ -84,16 +84,16 @@ class UsersController < ApplicationController
 
   def set_user
     @user = Current.user
-    redirect_to root_path, alert: t('flash.users.must_be_signed_in') unless @user
+    redirect_to root_path, alert: t("flash.users.must_be_signed_in") unless @user
   end
 
   def authorize_user
     action = case action_name
-             when "show" then :read
-             when "update", "link_google", "unlink_google" then :update
-             when "destroy" then :destroy
-             when "create_guide" then :create
-             end
+    when "show" then :read
+    when "update", "link_google", "unlink_google" then :update
+    when "destroy" then :destroy
+    when "create_guide" then :create
+    end
 
     if action_name == "create_guide"
       # For create_guide, authorize against the User class

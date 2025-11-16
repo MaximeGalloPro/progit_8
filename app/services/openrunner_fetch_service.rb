@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 # app/services/openrunner_fetch_service.rb
-require 'capybara'
-require 'selenium-webdriver'
+require "capybara"
+require "selenium-webdriver"
 
 # Service to fetch hiking trail details from Openrunner.com
 # This service uses Capybara with headless Selenium to scrape trail information
 # including distance, elevation, and route details.
 class OpenrunnerFetchService
     TECHNICAL_ELEMENTS = {
-        distance_km: ['Distance', :to_f],
-        elevation_gain: ['Dénivelé +', :to_i],
-        elevation_loss: ['Dénivelé -', :to_i],
-        altitude_min: ['Altitude min.', :to_i],
-        altitude_max: ['Altitude max.', :to_i]
+        distance_km: [ "Distance", :to_f ],
+        elevation_gain: [ "Dénivelé +", :to_i ],
+        elevation_loss: [ "Dénivelé -", :to_i ],
+        altitude_min: [ "Altitude min.", :to_i ],
+        altitude_max: [ "Altitude max.", :to_i ]
     }.freeze
 
     def self.fetch_details(openrunner_ref)
@@ -44,31 +44,31 @@ class OpenrunnerFetchService
         Rails.logger.debug "\n🔧 Setting up Capybara..."
         configure_capybara
         create_browser_session
-        Rails.logger.debug '✅ Capybara setup completed'
+        Rails.logger.debug "✅ Capybara setup completed"
     end
 
     def configure_capybara
         Capybara.register_driver :selenium_remote do |app|
             options = Selenium::WebDriver::Chrome::Options.new
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--window-size=1920,1080')
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--window-size=1920,1080")
 
             Capybara::Selenium::Driver.new(
                 app,
                 browser: :remote,
-                url: ENV.fetch('SELENIUM_REMOTE_URL', 'http://selenium:4444'),
+                url: ENV.fetch("SELENIUM_REMOTE_URL", "http://selenium:4444"),
                 options: options
             )
         end
 
         Capybara.default_driver = :selenium_remote
         Capybara.javascript_driver = :selenium_remote
-        Capybara.app_host = 'https://www.openrunner.com'
+        Capybara.app_host = "https://www.openrunner.com"
     end
 
     def create_browser_session
-        Rails.logger.debug '🌐 Creating new browser session...'
+        Rails.logger.debug "🌐 Creating new browser session..."
         @browser = Capybara::Session.new(:selenium_remote)
     end
 
@@ -80,9 +80,9 @@ class OpenrunnerFetchService
     def load_page
         Rails.logger.debug { "\n🌐 Visiting URL: #{@url}" }
         @browser.visit(@url)
-        Rails.logger.debug '⏳ Waiting 5 seconds for page load...'
+        Rails.logger.debug "⏳ Waiting 5 seconds for page load..."
         sleep 5
-        Rails.logger.debug '✅ Page loaded'
+        Rails.logger.debug "✅ Page loaded"
     end
 
     def collect_trail_data
@@ -95,7 +95,7 @@ class OpenrunnerFetchService
 
     def fetch_trail_name
         Rails.logger.debug "\n🔍 Fetching trail name..."
-        { trail_name: @browser.find('h1.text-route-detail-header').text.strip }
+        { trail_name: @browser.find("h1.text-route-detail-header").text.strip }
     rescue Capybara::ElementNotFound => e
         Rails.logger.debug { "⚠️ Could not find trail name: #{e.message}" }
         {}
@@ -103,7 +103,7 @@ class OpenrunnerFetchService
 
     def fetch_starting_point
         Rails.logger.debug "\n🔍 Fetching starting point..."
-        location_element = @browser.all('.text-nav.font-semibold span.truncate').first
+        location_element = @browser.all(".text-nav.font-semibold span.truncate").first
         return {} unless location_element
 
         { starting_point: location_element.text.strip }
@@ -121,8 +121,8 @@ class OpenrunnerFetchService
     end
 
     def fetch_single_element(text, conversion_method)
-        element = @browser.find('.or-parcours-info-block', text: text)
-        value_element = element.find('.or-parcours-info-text')
+        element = @browser.find(".or-parcours-info-block", text: text)
+        value_element = element.find(".or-parcours-info-text")
         process_element_value(value_element.text, conversion_method)
     rescue Capybara::ElementNotFound => e
         log_element_error(text, e)
@@ -130,7 +130,7 @@ class OpenrunnerFetchService
     end
 
     def process_element_value(raw_value, conversion_method)
-        cleaned_value = raw_value.tr(',', '.')
+        cleaned_value = raw_value.tr(",", ".")
         cleaned_value.send(conversion_method)
     end
 
@@ -144,9 +144,9 @@ class OpenrunnerFetchService
     def cleanup_browser
         return unless @browser
 
-        Rails.logger.debug '🧹 Cleaning up browser session...'
+        Rails.logger.debug "🧹 Cleaning up browser session..."
         @browser.quit
-        Rails.logger.debug '👋 Browser session closed'
+        Rails.logger.debug "👋 Browser session closed"
     end
 
     def log_element_error(element_name, error)

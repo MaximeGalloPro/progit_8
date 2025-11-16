@@ -24,9 +24,9 @@ class StatsController < ApplicationController
 
     def fetch_last_hikes
         Hike.joins(:latest_history)
-            .select('hikes.*, hike_histories.hiking_date')
+            .select("hikes.*, hike_histories.hiking_date")
             .where(hike_histories: { hiking_date: ...Date.current })
-            .order('hike_histories.hiking_date DESC')
+            .order("hike_histories.hiking_date DESC")
             .limit(10)
     end
 
@@ -39,12 +39,12 @@ class StatsController < ApplicationController
 
     def fetch_total_distance
         HikeHistory.joins(:hike)
-                   .sum('hikes.distance_km')
+                   .sum("hikes.distance_km")
     end
 
     def fetch_total_elevation
         HikeHistory.joins(:hike)
-                   .sum('hikes.elevation_gain')
+                   .sum("hikes.elevation_gain")
     end
 
     def fetch_active_guides
@@ -70,7 +70,7 @@ class StatsController < ApplicationController
 
     def format_monthly_stats(stats)
         stats.transform_keys do |key|
-            Date.parse("#{key}-01").strftime('%b')
+            Date.parse("#{key}-01").strftime("%b")
         end
     end
 
@@ -81,14 +81,14 @@ class StatsController < ApplicationController
     end
 
     def last_12_months
-        Array.new(12) { |i| i.months.ago.strftime('%b') }.reverse
+        Array.new(12) { |i| i.months.ago.strftime("%b") }.reverse
     end
 
     def fetch_guide_stats
         HikeHistory.joins(:user)
                    .where(hiking_date: 1.year.ago..)
-                   .group('users.name')
-                   .order('count_all DESC')
+                   .group("users.name")
+                   .order("count_all DESC")
                    .limit(10)
                    .count
     end
