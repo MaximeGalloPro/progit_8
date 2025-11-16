@@ -1,0 +1,84 @@
+<!-- Modal pour créer un nouveau guide -->
+<div id="guideModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8 max-w-md w-full mx-4">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-semibold text-white">Créer un nouveau guide</h2>
+      <button type="button"
+              data-modal-close
+              class="text-slate-400 hover:text-white transition-colors">
+        <i class="icon icon-times text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Error container -->
+    <div data-modal-errors class="hidden rounded-lg bg-red-500/10 border border-red-500/20 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="icon icon-exclamation-circle text-red-400"></i>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-300">Erreurs :</h3>
+          <ul data-modal-errors-list class="mt-2 text-sm text-red-300 list-disc list-inside">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="createGuideForm" class="space-y-6">
+      <div>
+        <label for="guide_email" class="block text-sm font-medium text-slate-300 mb-2">
+          Email <span class="text-red-400">*</span>
+        </label>
+        <input type="email"
+               id="guide_email"
+               name="guide[email_address]"
+               required
+               class="block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all"
+               placeholder="exemple@email.com">
+      </div>
+
+      <div>
+        <label for="guide_name" class="block text-sm font-medium text-slate-300 mb-2">
+          Nom complet <span class="text-red-400">*</span>
+        </label>
+        <input type="text"
+               id="guide_name"
+               name="guide[name]"
+               required
+               class="block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all"
+               placeholder="Jean Dupont">
+      </div>
+
+      <div>
+        <label for="guide_nickname" class="block text-sm font-medium text-slate-300 mb-2">
+          Surnom
+        </label>
+        <input type="text"
+               id="guide_nickname"
+               name="guide[nickname]"
+               class="block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all"
+               placeholder="Jéjé (optionnel)">
+      </div>
+
+      <div class="flex gap-3 pt-4">
+        <button type="submit"
+                id="createGuideSubmit"
+                class="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02]">
+          Créer le guide
+        </button>
+        <button type="button"
+                data-modal-close
+                class="rounded-lg bg-slate-700 px-6 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all">
+          Annuler
+        </button>
+      </div>
+    </form>
+
+    <p class="mt-4 text-sm text-slate-400">
+      <i class="icon icon-info-circle"></i>
+      Un email sera envoyé au guide pour qu'il complète son inscription.
+    </p>
+  </div>
+</div>

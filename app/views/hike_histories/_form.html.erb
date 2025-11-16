@@ -26,15 +26,15 @@
                 <%= f.label :hike_id, class: "block text-sm font-medium text-slate-300 mb-2" do %>
                     Randonnée <span class="text-red-400">*</span>
                 <% end %>
-                <div class="flex gap-2">
+                <div class="flex gap-2 max-w-full">
                     <%= f.collection_select :hike_id,
                                             @hikes,
                                             :id,
                                             ->(hike) { "#{hike.trail_name} (#{hike.starting_point})" },
                                             { prompt: "Rechercher une randonnée..." },
-                                            { class: "flex-1 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all select2 #{@hike_history.errors[:hike_id].any? ? 'border-red-500 focus:ring-red-500' : ''}" } %>
+                                            { class: "flex-1 min-w-0 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all select2 #{@hike_history.errors[:hike_id].any? ? 'border-red-500 focus:ring-red-500' : ''}" } %>
                     <%= link_to new_hike_path,
-                                class: "inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all whitespace-nowrap",
+                                class: "flex-shrink-0 inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all whitespace-nowrap",
                                 title: "Ajouter un nouveau parcours" do %>
                         <i class="icon icon-plus"></i>
                     <% end %>
