@@ -13,3 +13,7 @@ pin "datatable_init"
 # Hikes and Map
 pin "hikes"
 pin "map"
+
+# Modals
+pin "modal"
+pin "guide_modal"

@@ -87,7 +87,9 @@ class Hike < ApplicationRecord
     def self.todays_hike
         today_query = joins(:hike_histories)
                       .select('hikes.*, hike_histories.departure_time,
-                             hike_histories.hiking_date')
+                             hike_histories.hiking_date,
+                             hike_histories.carpooling_cost as history_carpooling_cost,
+                             hike_histories.id as history_id')
 
         today_hike = today_query
                      .where(hike_histories: { hiking_date: Date.current })
@@ -122,7 +124,7 @@ class Hike < ApplicationRecord
     end
 
     def last_guide_name
-        latest_history&.member&.name
+        latest_history&.user&.name
     end
 
     private

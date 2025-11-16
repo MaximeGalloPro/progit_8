@@ -4,6 +4,8 @@
 # display of path coordinates, maintains path history in session, and provides
 # validation for path points.
 class HikePathsController < ApplicationController
+    allow_unauthenticated_access only: [:show]
+
     def show
         @hike_path = HikePath.find_by(id: params[:id])
         handle_missing_path unless @hike_path

@@ -4,6 +4,10 @@
 # hiking activities. Provides aggregated metrics including total
 # hikes, distances, elevations, and guide performance statistics.
 class StatsController < ApplicationController
+    allow_unauthenticated_access
+    skip_load_and_authorize_resource
+    skip_authorization_check
+
     def dashboard
         @stats = {
             total_hikes: fetch_total_hikes,
@@ -81,8 +85,9 @@ class StatsController < ApplicationController
     end
 
     def fetch_guide_stats
-        HikeHistory.joins(:member)
+        HikeHistory.joins(:user)
                    .where(hiking_date: 1.year.ago..)
+                   .group('users.name')
                    .order('count_all DESC')
                    .limit(10)
                    .count

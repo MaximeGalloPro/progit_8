@@ -2,11 +2,14 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
-  # User profile
-  resource :user, only: [:show, :update, :destroy] do
+  # User profile and signup
+  resource :user, only: [:new, :create, :show, :update, :destroy] do
     post :link_google
     delete :unlink_google
   end
+
+  # Third-party user creation (guides, etc.)
+  post "users/create_guide", to: "users#create_guide", as: :create_guide
 
   # Admin
   namespace :admin do
@@ -32,6 +35,9 @@ Rails.application.routes.draw do
   end
   resources :hike_histories
   resources :hike_paths
+
+  # Stats
+  get "stats/dashboard", to: "stats#dashboard", as: :stats_dashboard
 
   # Map test
   get "map_test", to: "map_test#index"

@@ -1,23 +1,15 @@
-<div class="row mb-4">
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Randonnées par mois</h5>
-                <div class="chart-container">
-                    <canvas id="monthlyChart"></canvas>
-                </div>
-            </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+        <h5 class="text-lg font-semibold text-white mb-4">Randonnées par mois</h5>
+        <div class="chart-container">
+            <canvas id="monthlyChart"></canvas>
         </div>
     </div>
 
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Top Guides</h5>
-                <div class="chart-container">
-                    <canvas id="guidesChart"></canvas>
-                </div>
-            </div>
+    <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700">
+        <h5 class="text-lg font-semibold text-white mb-4">Top Guides</h5>
+        <div class="chart-container">
+            <canvas id="guidesChart"></canvas>
         </div>
     </div>
 </div>
@@ -78,15 +70,10 @@
 
     // Fonction pour obtenir les options de thème pour Chart.js
     function getChartThemeOptions() {
-        // Détecter spécifiquement le max-theme
-        const isMaxTheme = document.body.classList.contains('max-theme');
-
-        // Récupérer les variables CSS
-        const computedStyle = getComputedStyle(document.documentElement);
-        const textColor = isMaxTheme ? '#FFFFFF' : computedStyle.getPropertyValue('--text-color').trim();
-        const gridColor = isMaxTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-        const accentColor = computedStyle.getPropertyValue('--accent-color').trim();
-        const borderColor = computedStyle.getPropertyValue('--border-color').trim();
+        // Couleurs Tailwind dark theme
+        const textColor = '#cbd5e1';        // slate-300
+        const gridColor = 'rgba(71, 85, 105, 0.3)'; // slate-600 transparent
+        const borderColor = '#475569';      // slate-600
 
         return {
             responsive: true,
@@ -95,7 +82,7 @@
                 legend: {
                     position: 'top',
                     labels: {
-                        color: textColor,  // Couleur du texte de la légende
+                        color: textColor,
                         font: {
                             size: 12
                         },
@@ -103,10 +90,10 @@
                     }
                 },
                 tooltip: {
-                    backgroundColor: isMaxTheme ? '#2D3748' : 'rgba(255, 255, 255, 0.9)',
-                    titleColor: isMaxTheme ? '#FFFFFF' : textColor,
-                    bodyColor: isMaxTheme ? '#FFFFFF' : textColor,
-                    borderColor: borderColor,
+                    backgroundColor: '#1e293b',  // slate-800
+                    titleColor: '#ffffff',
+                    bodyColor: '#cbd5e1',        // slate-300
+                    borderColor: '#475569',      // slate-600
                     borderWidth: 1,
                     padding: 14,
                     displayColors: true,
@@ -119,8 +106,7 @@
                         size: 13
                     },
                     boxPadding: 6,
-                    cornerRadius: 6,
-                    opacity: 1
+                    cornerRadius: 6
                 }
             },
             scales: {
@@ -128,7 +114,7 @@
                     beginAtZero: true,
                     ticks: {
                         stepSize: 1,
-                        color: textColor,  // Couleur du texte de l'axe Y
+                        color: textColor,
                         padding: 8
                     },
                     grid: {
@@ -141,7 +127,7 @@
                 },
                 x: {
                     ticks: {
-                        color: textColor,  // Couleur du texte de l'axe X
+                        color: textColor,
                         padding: 8
                     },
                     grid: {
@@ -171,7 +157,7 @@
         cleanupCharts();
 
         const chartOptions = getChartThemeOptions();
-        const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+        const accentColor = '#3b82f6'; // blue-500 Tailwind
 
         // Récupérer et logger l'état des éléments canvas
         const monthlyChartEl = document.getElementById('monthlyChart');

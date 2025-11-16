@@ -28,6 +28,9 @@ class Ability
       can :update, User, id: user.id
       can :destroy, User, id: user.id
 
+      # Regular user can create third-party users (guides)
+      can :create, User
+
       # Regular user can read hikes but not modify
       can :manage, Hike
       can :manage, HikeHistory

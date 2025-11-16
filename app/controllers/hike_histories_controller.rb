@@ -5,6 +5,7 @@
 # hike.
 class HikeHistoriesController < ApplicationController
     before_action :set_hikes, only: %i[new edit create update]
+    before_action :set_users, only: %i[new edit create update]
     before_action :set_hike_history, only: %i[edit update destroy]
 
     def index
@@ -52,6 +53,10 @@ class HikeHistoriesController < ApplicationController
         @hikes = Hike.order(:trail_name)
     end
 
+    def set_users
+        @users = User.order(:name)
+    end
+
     def set_hike_history
         @hike_history = HikeHistory.find_by(id: params[:id])
     end
@@ -84,6 +89,7 @@ class HikeHistoriesController < ApplicationController
             :day_type,
             :carpooling_cost,
             :hike_id,
+            :user_id,
             :openrunner_ref,
         )
     end

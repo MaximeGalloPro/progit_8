@@ -167,7 +167,7 @@ class HikesController < ApplicationController
             .then { |scope| apply_search(scope) }
             .order_by_latest_date
             .distinct
-            .includes(:hike_histories, :hike_path, latest_history: :member)
+            .includes(:hike_histories, :hike_path, latest_history: :user)
     end
 
     def apply_search(scope)

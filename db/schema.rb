@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_02_143808) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_15_173105) do
   create_table "hike_histories", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.decimal "carpooling_cost", precision: 5, scale: 2
     t.datetime "created_at", null: false
@@ -18,9 +18,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_143808) do
     t.string "departure_time"
     t.integer "hike_id"
     t.date "hiking_date"
-    t.integer "member_id"
     t.string "openrunner_ref"
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["hike_id"], name: "index_hike_histories_on_hike_id"
     t.index ["hiking_date", "hike_id"], name: "index_hike_histories_on_hiking_date_and_hike_id", unique: true
   end

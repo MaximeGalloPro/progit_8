@@ -4,10 +4,12 @@
 # times, costs, and references for each member's hiking activity
 class HikeHistory < ApplicationRecord
     belongs_to :hike
+    belongs_to :user
 
     # Validations de présence pour tous les champs requis
     validates :hiking_date, presence: true
     validates :departure_time, presence: true
+    validates :user_id, presence: true
 
     # Validations numériques avec contraintes spécifiques
     validates :carpooling_cost,
