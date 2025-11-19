@@ -9,7 +9,7 @@ class HikeHistoriesController < ApplicationController
     before_action :set_hike_history, only: %i[edit update destroy]
 
     def index
-        @hike = Hike.find_by(id: params[:hike_id])
+        @hike = Hike.find_by(id: params[:hike_id]) if params[:hike_id].present?
         @results = fetch_hike_histories
     end
 
@@ -62,8 +62,9 @@ class HikeHistoriesController < ApplicationController
     end
 
     def fetch_hike_histories
-        HikeHistory.where(hike_id: params[:hike_id])
-                   .order(hiking_date: :desc)
+        histories = HikeHistory.includes(:hike, :user).order(hiking_date: :desc)
+        histories = histories.where(hike_id: params[:hike_id]) if params[:hike_id].present?
+        histories
     end
 
     def handle_create_error

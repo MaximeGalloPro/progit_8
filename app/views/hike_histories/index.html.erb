@@ -1,110 +1,161 @@
+<script type="module">
+    import "hikes_polling"
+</script>
+
 <%# app/views/hike_histories/index.html.erb %>
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Historique : <%= @hike.trail_name %></h1>
-        <%= link_to "← Retour", :back, class: "btn btn-outline-secondary" %>
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <% if @hike %>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white">Historique : <%= @hike.trail_name %></h1>
+        <% else %>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white">Historique des randonnées</h1>
+        <% end %>
     </div>
 
-    <%# Card d'information sur la randonnée %>
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Informations de la randonnée</h5>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-2"><strong>Point de départ :</strong> <%= @hike.starting_point %></div>
-                    <div class="mb-2"><strong>Distance :</strong> <%= @hike.distance_km %> km</div>
+    <% if @hike %>
+        <%# Card d'information sur la randonnée %>
+        <div class="bg-slate-800 rounded-2xl shadow-2xl p-4 sm:p-6 border border-slate-700 mb-6">
+            <h5 class="text-lg font-semibold text-white mb-4">Informations de la randonnée</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Point de départ :</span> <span class="text-white"><%= @hike.starting_point %></span></div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Distance :</span> <span class="text-white"><%= @hike.distance_km %> km</span></div>
                 </div>
-                <div class="col-md-4">
-                    <div class="mb-2"><strong>Dénivelé + :</strong> <%= @hike.elevation_gain %> m</div>
-                    <div class="mb-2"><strong>Dénivelé - :</strong> <%= @hike.elevation_loss %> m</div>
+                <div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Dénivelé + :</span> <span class="text-white"><%= @hike.elevation_gain %> m</span></div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Dénivelé - :</span> <span class="text-white"><%= @hike.elevation_loss %> m</span></div>
                 </div>
-                <div class="col-md-4">
-                    <div class="mb-2"><strong>Altitude min :</strong> <%= @hike.altitude_min %> m</div>
-                    <div class="mb-2"><strong>Altitude max :</strong> <%= @hike.altitude_max %> m</div>
-                    <div class="mb-2"><strong>Difficulté :</strong> <%= @hike.difficulty_text %></div>
+                <div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Altitude min :</span> <span class="text-white"><%= @hike.altitude_min %> m</span></div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Altitude max :</span> <span class="text-white"><%= @hike.altitude_max %> m</span></div>
+                    <div class="mb-2 text-sm"><span class="font-medium text-slate-400">Difficulté :</span> <span class="text-white"><%= @hike.difficulty_text %></span></div>
                 </div>
             </div>
 
-            <div class="d-flex align-items-center gap-2 mt-3">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 pt-4 border-t border-slate-700">
                 <%= link_to "https://www.openrunner.com/route-details/#{@hike.openrunner_ref}",
-                            class: "btn btn-outline-primary",
+                            class: "inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-2 text-sm text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
                             target: "_blank" do %>
-                    <i class="icon icon-mountain"></i> Voir sur OpenRunner
+                    <i class="icon icon-mountain mr-2"></i> Voir sur OpenRunner
                 <% end %>
 
                 <% if @hike.updating? %>
-                    <div class="d-inline-flex align-items-center">
-                        <button class="btn btn-outline-dark" disabled>
-                            <i class="icon icon-sync-alt spin"></i>
-                            <span class="ms-2">Mise à jour en cours...</span>
-                        </button>
-                    </div>
+                    <button class="inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-2 text-sm text-slate-400 border border-slate-600 cursor-not-allowed"
+                            data-hike-updating="true"
+                            data-hike-id="<%= @hike.id %>"
+                            disabled>
+                        <i class="icon icon-sync-alt spin mr-2"></i>
+                        Mise à jour en cours...
+                    </button>
                 <% elsif @hike.openrunner_ref.blank? || @hike.openrunner_ref.to_i.zero? %>
-                    <div class="d-inline-flex align-items-center">
-                        <button class="btn btn-outline-danger" disabled>
-                            <i class="icon icon-ban"></i>
-                            <span class="ms-2">Pas de référence OpenRunner</span>
-                        </button>
-                    </div>
+                    <button class="inline-flex items-center justify-center rounded-lg bg-red-500/10 px-4 py-2 text-sm text-red-400 border border-red-500/20 cursor-not-allowed" disabled>
+                        <i class="icon icon-ban mr-2"></i>
+                        Pas de référence OpenRunner
+                    </button>
                 <% else %>
-                    <div class="d-inline-flex align-items-center">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                         <%= button_to refresh_from_openrunner_hike_path(@hike),
-                                      class: "btn btn-outline-dark",
+                                      class: "inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-2 text-sm text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all cursor-pointer",
                                       data: { turbo: false } do %>
-                            <i class="icon icon-sync-alt"></i>
-                            <span class="ms-2">Mettre à jour depuis OpenRunner</span>
+                            <i class="icon icon-sync-alt mr-2"></i>
+                            Mettre à jour depuis OpenRunner
                         <% end %>
-                        <small class="text-muted ms-2">
+                        <small class="text-xs text-slate-400">
                             Dernière mise à jour : <%= @hike.last_update_attempt&.strftime('%d/%m/%Y %H:%M') || 'Jamais' %>
                         </small>
                     </div>
                 <% end %>
             </div>
         </div>
-    </div>
+    <% end %>
 
     <%# Tableau de l'historique %>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-light">
-            <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Guide</th>
-                <th scope="col">Heure de départ</th>
-                <th scope="col">Type de jour</th>
-                <th scope="col">Covoiturage</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% @results.each do |history| %>
-                <tr>
-                    <td><%= history.hiking_date&.strftime("%d/%m/%Y") %></td>
-                    <td><%= history.departure_time %></td>
-                    <td><%= history.day_type %></td>
-                    <td><%= number_to_currency(history.carpooling_cost, unit: "€", format: "%n %u") %></td>
-                    <td class="text-nowrap">
-                        <div class="btn-group">
-                            <%= link_to edit_hike_history_path(history),
-                                        class: "btn btn-outline-dark btn-sm",
-                                        title: "Editer" do %>
-                                <i class="icon icon-pen"></i>
+    <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+        <!-- Version desktop -->
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-slate-700/50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Date</th>
+                        <% unless @hike %>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Randonnée</th>
+                        <% end %>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Guide</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Heure de départ</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Type de jour</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Covoiturage</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700">
+                    <% @results.each do |history| %>
+                        <tr class="hover:bg-slate-700/30 transition-colors">
+                            <td class="px-4 py-3 text-sm text-white whitespace-nowrap"><%= history.hiking_date&.strftime("%d/%m/%Y") %></td>
+                            <% unless @hike %>
+                                <td class="px-4 py-3 text-sm text-slate-300">
+                                    <%= link_to history.hike&.trail_name, hike_histories_path(hike_id: history.hike_id), class: "text-blue-400 hover:text-blue-300 transition-colors" %>
+                                </td>
                             <% end %>
+                            <td class="px-4 py-3 text-sm text-slate-300"><%= history.user&.name || history.user&.email_address %></td>
+                            <td class="px-4 py-3 text-sm text-slate-300"><%= history.departure_time %></td>
+                            <td class="px-4 py-3 text-sm text-slate-300"><%= history.day_type %></td>
+                            <td class="px-4 py-3 text-sm text-slate-300"><%= number_to_currency(history.carpooling_cost, unit: "€", format: "%n %u") %></td>
+                            <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                <div class="flex gap-2">
+                                    <%= link_to edit_hike_history_path(history),
+                                                class: "p-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
+                                                title: "Editer" do %>
+                                        <i class="icon icon-pen text-xs"></i>
+                                    <% end %>
 
+                                    <%= button_to hike_history_path(history),
+                                                  method: :delete,
+                                                  class: "p-2 rounded-lg bg-slate-700 text-red-400 border border-slate-600 hover:bg-red-500/20 transition-all cursor-pointer",
+                                                  title: "Supprimer",
+                                                  form: { onsubmit: "return confirm('Êtes-vous sûr de vouloir supprimer cet historique ?')" } do %>
+                                        <i class="icon icon-trash text-xs"></i>
+                                    <% end %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Version mobile -->
+        <div class="sm:hidden divide-y divide-slate-700">
+            <% @results.each do |history| %>
+                <div class="p-4 hover:bg-slate-700/30 transition-colors">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-white font-medium"><%= history.hiking_date&.strftime("%d/%m/%Y") %></span>
+                        <div class="flex gap-2">
+                            <%= link_to edit_hike_history_path(history),
+                                        class: "p-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
+                                        title: "Editer" do %>
+                                <i class="icon icon-pen text-xs"></i>
+                            <% end %>
                             <%= button_to hike_history_path(history),
                                           method: :delete,
-                                          class: "btn btn-outline-dark btn-sm",
+                                          class: "p-2 rounded-lg bg-slate-700 text-red-400 border border-slate-600 hover:bg-red-500/20 transition-all cursor-pointer",
                                           title: "Supprimer",
-                                          form: { style: 'display: inline-block',
-                                                  onsubmit: "return confirm('Êtes-vous sûr de vouloir supprimer cet historique ?')" },
-                                          form_class: 'button_to' do %>
-                                <i class="icon icon-trash"></i>
+                                          form: { onsubmit: "return confirm('Êtes-vous sûr de vouloir supprimer cet historique ?')" } do %>
+                                <i class="icon icon-trash text-xs"></i>
                             <% end %>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                    <div class="space-y-1 text-sm">
+                        <% unless @hike %>
+                            <div><span class="text-slate-400">Randonnée :</span> <%= link_to history.hike&.trail_name, hike_histories_path(hike_id: history.hike_id), class: "text-blue-400 hover:text-blue-300 transition-colors" %></div>
+                        <% end %>
+                        <div><span class="text-slate-400">Guide :</span> <span class="text-slate-300"><%= history.user&.name || history.user&.email_address %></span></div>
+                        <div><span class="text-slate-400">Départ :</span> <span class="text-slate-300"><%= history.departure_time %></span></div>
+                        <div><span class="text-slate-400">Type :</span> <span class="text-slate-300"><%= history.day_type %></span></div>
+                        <div><span class="text-slate-400">Covoiturage :</span> <span class="text-slate-300"><%= number_to_currency(history.carpooling_cost, unit: "€", format: "%n %u") %></span></div>
+                    </div>
+                </div>
             <% end %>
-            </tbody>
-        </table>
+        </div>
     </div>
 </div>

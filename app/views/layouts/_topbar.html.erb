@@ -19,6 +19,9 @@
         <%= link_to hikes_path, class: "text-slate-300 hover:text-blue-400 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" do %>
           <i class="icon icon-hiking"></i> Liste
         <% end %>
+        <%= link_to hike_histories_path, class: "text-slate-300 hover:text-blue-400 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" do %>
+          <i class="icon icon-history"></i> Historique
+        <% end %>
 
         <!-- Dropdown Ajouter -->
         <div class="relative group">
@@ -65,11 +68,14 @@
   <div id="mobile-menu" class="hidden md:hidden border-t border-slate-700">
     <div class="px-2 pt-2 pb-3 space-y-1">
       <%= link_to stats_dashboard_path, class: "block text-slate-300 hover:text-blue-400 px-3 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" do %>
-        <i class="icon icon-chart-bar"></i> Stats
+        <i class="icon icon-chart-line"></i> Stats
       <% end %>
       
       <%= link_to hikes_path, class: "block text-slate-300 hover:text-blue-400 px-3 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" do %>
         <i class="icon icon-hiking"></i> Liste
+      <% end %>
+      <%= link_to hike_histories_path, class: "block text-slate-300 hover:text-blue-400 px-3 py-2 text-sm font-medium rounded-lg transition-all hover:bg-slate-700" do %>
+        <i class="icon icon-history"></i> Historique
       <% end %>
 
       <!-- Mobile Ajouter section -->

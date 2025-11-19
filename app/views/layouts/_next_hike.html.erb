@@ -1,14 +1,14 @@
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
     <% todays_hike = Hike.todays_hike %>
     <% if todays_hike %>
-        <div class="bg-slate-800/50 rounded-lg border border-slate-700/50 p-4 mb-6">
-            <div class="flex items-center justify-between gap-4">
+        <div class="bg-slate-800/50 rounded-lg border border-slate-700/50 p-3 sm:p-4 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <%# Partie gauche : Icône + Date + Badge %>
                 <div class="flex items-center gap-3">
                     <i class="icon icon-calendar-day text-blue-400 text-lg"></i>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
                         <% if todays_hike.hiking_date.present? %>
-                            <span class="text-white font-medium whitespace-nowrap">
+                            <span class="text-white font-medium">
                                 <%= l(todays_hike.hiking_date, format: :long) %>
                             </span>
                         <% end %>
@@ -21,7 +21,7 @@
                 </div>
 
                 <%# Partie centrale : Informations compactes %>
-                <div class="flex items-center gap-4 text-sm text-slate-300 flex-wrap">
+                <div class="flex items-center gap-3 sm:gap-4 text-sm text-slate-300 flex-wrap">
                     <% if todays_hike.starting_point.present? %>
                         <span class="whitespace-nowrap"><i class="icon icon-map-marker-alt text-slate-500 text-xs"></i> <%= todays_hike.starting_point %></span>
                     <% end %>

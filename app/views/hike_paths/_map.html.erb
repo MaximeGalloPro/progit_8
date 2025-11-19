@@ -96,7 +96,7 @@
             </div>
 
             <!-- Graphique élévation -->
-            <canvas id="elevationChart" width="800" height="200" class="hidden"></canvas>
+            <canvas id="elevationChart" class="hidden w-full"></canvas>
         </div>
     </div>
 </div>
@@ -118,7 +118,19 @@
 
     @media (max-width: 768px) {
         #map-container {
-            height: 25rem;
+            height: 60vh;
+            min-height: 20rem;
+        }
+    }
+
+    #elevationChart {
+        height: 150px !important;
+        margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        #elevationChart {
+            height: 120px !important;
         }
     }
 </style>
