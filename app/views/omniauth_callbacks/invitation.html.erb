@@ -1,0 +1,41 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-10 text-center text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+      <%= t('.title') %>
+    </h2>
+    <p class="mt-2 text-center text-sm text-slate-400">
+      <%= t('.subtitle') %>
+    </p>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
+      <!-- User info from Google -->
+      <div class="mb-6 p-4 bg-slate-700/50 rounded-lg border border-slate-600">
+        <p class="text-sm text-slate-400"><%= t('.registering_as') %></p>
+        <p class="text-white font-medium"><%= @name %></p>
+        <p class="text-sm text-slate-300"><%= @email %></p>
+      </div>
+      <%= form_with url: oauth_complete_registration_path, method: :post, class: "space-y-6" do |form| %>
+        <div>
+          <%= form.label :invitation_code, t('.invitation_code_label'), class: "block text-sm font-medium text-slate-300 mb-2" %>
+          <%= form.password_field :invitation_code,
+              required: true,
+              autofocus: true,
+              placeholder: t('.invitation_code_placeholder'),
+              class: "block w-full rounded-lg border-0 bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm sm:leading-6" %>
+        </div>
+
+        <div>
+          <%= form.submit t('.create_button'), class: "w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:from-blue-500 hover:to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all hover:scale-[1.02] cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-400">
+          <%= link_to t('.cancel'), new_session_path, class: "font-medium text-slate-400 hover:text-slate-300 transition-colors" %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

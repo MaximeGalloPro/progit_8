@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     delete :unlink_google
   end
 
+  # Google OAuth invitation code flow
+  get "oauth/invitation", to: "omniauth_callbacks#invitation", as: :oauth_invitation
+  post "oauth/complete_registration", to: "omniauth_callbacks#complete_registration", as: :oauth_complete_registration
+
   # Third-party user creation (guides, etc.)
   post "users/create_guide", to: "users#create_guide", as: :create_guide
 
