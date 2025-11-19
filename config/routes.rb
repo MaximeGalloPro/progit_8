@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   # Admin
   namespace :admin do
-    resources :users, only: [ :index ] do
+    resources :users, only: [ :index, :edit, :update ] do
       member do
         patch :update_role
       end

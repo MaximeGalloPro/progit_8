@@ -1,9 +1,9 @@
 <%= form_with url: update_role_admin_user_path(user), method: :patch do |form| %>
-  <%= form.select :role,
-      User.roles.keys.map { |role| [role.humanize, role] },
-      { selected: user.role },
-      {
-        class: "rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6",
-        onchange: "this.form.submit()"
-      } %>
+    <%= form.select :role,
+        User.roles.keys.map { |role| [role.humanize, role] },
+        { selected: user.role },
+        {
+            class: "rounded-lg bg-slate-700 px-3 py-1.5 text-sm text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer",
+            onchange: "this.form.submit()"
+        } %>
 <% end %>

@@ -435,3 +435,8 @@
 .icon-sync-alt.spin {
   animation: spin 1s linear infinite;
 }
+
+.icon-users-cog {
+  mask: url("users-cog.svg") no-repeat center / contain;
+  -webkit-mask: url("users-cog.svg") no-repeat center / contain;
+}
