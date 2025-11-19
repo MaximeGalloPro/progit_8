@@ -90,10 +90,17 @@ namespace :db do
     # Insert data into temp table
     conn.execute("INSERT INTO temp_hikes VALUES #{insert_match[1]}")
 
-    # Copy to final table
+    # Copy to final table with explicit column mapping
     conn.execute(<<~SQL)
       INSERT INTO hikes
-      SELECT * FROM temp_hikes
+        (id, number, day, difficulty, starting_point, trail_name, carpooling_cost,
+         distance_km, elevation_gain, openrunner_ref, created_at, updated_at,
+         elevation_loss, altitude_min, altitude_max, updating, last_update_attempt)
+      SELECT
+        id, number, day, difficulty, starting_point, trail_name, carpooling_cost,
+        distance_km, elevation_gain, openrunner_ref, created_at, updated_at,
+        elevation_loss, altitude_min, altitude_max, updating, last_update_attempt
+      FROM temp_hikes
     SQL
 
     count = conn.select_value("SELECT COUNT(*) FROM temp_hikes")
@@ -123,8 +130,9 @@ namespace :db do
     conn.execute("INSERT INTO temp_hike_paths VALUES #{insert_match[1]}")
 
     conn.execute(<<~SQL)
-      INSERT INTO hike_paths
-      SELECT * FROM temp_hike_paths
+      INSERT INTO hike_paths (id, hike_id, coordinates, created_at, updated_at)
+      SELECT id, hike_id, coordinates, created_at, updated_at
+      FROM temp_hike_paths
     SQL
 
     count = conn.select_value("SELECT COUNT(*) FROM temp_hike_paths")
