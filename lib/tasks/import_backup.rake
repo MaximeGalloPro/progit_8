@@ -260,5 +260,4 @@ namespace :db do
     puts "   ✅ Imported #{count} hike histories"
     puts "   ⚠️  Skipped #{skipped} histories with missing users" if skipped.to_i > 0
   end
-
 end
