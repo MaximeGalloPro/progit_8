@@ -141,9 +141,9 @@
                 <% end %>
             </div>
 
-            <!-- Type -->
+            <!-- Type de repas -->
             <div>
-                <%= f.label :day, "Type", class: "block text-sm font-medium text-slate-300 mb-2" %>
+                <%= f.label :day, "Type de repas", class: "block text-sm font-medium text-slate-300 mb-2" %>
                 <%= f.select :day,
                              [
                                  ['Sélectionnez un type de repas', ''],
@@ -153,12 +153,12 @@
                                  ['Dîner', 'diner'],
                                  ['Pique-nique', 'picnic']
                              ],
-                             {},
-                             { class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike.errors[:meal_type].any? ? 'border-red-500 focus:ring-red-500' : ''}" }
+                             { selected: @hike.day },
+                             { class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike.errors[:day].any? ? 'border-red-500 focus:ring-red-500' : ''}" }
                 %>
-                <% if @hike.errors[:meal_type].any? %>
+                <% if @hike.errors[:day].any? %>
                     <p class="mt-2 text-sm text-red-400">
-                        <%= @hike.errors[:meal_type].join(', ') %>
+                        <%= @hike.errors[:day].join(', ') %>
                     </p>
                 <% end %>
             </div>

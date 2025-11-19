@@ -3,6 +3,15 @@
 # Represents a hiking trail with its characteristics, history, and associated statistics.
 # Manages trail information, difficulty levels, and hiking events tracking
 class Hike < ApplicationRecord
+    # Enums
+    enum :day, {
+        apero: 0,
+        petit_dejeuner: 1,
+        dejeuner: 2,
+        diner: 3,
+        picnic: 4
+    }
+
     # Associations
     has_many :hike_histories, dependent: :destroy
     has_one :latest_history,

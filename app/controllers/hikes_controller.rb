@@ -162,7 +162,8 @@ class HikesController < ApplicationController
             :elevation_loss,
             :altitude_min,
             :altitude_max,
-            :openrunner_ref
+            :openrunner_ref,
+            :day
         )
 
         convert_distance_format(params_with_converted_distance)
