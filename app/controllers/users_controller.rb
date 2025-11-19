@@ -109,7 +109,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:nickname, :password)
+    params.require(:user).permit(:nickname, :phone_number, :password)
   end
 
   def guide_params

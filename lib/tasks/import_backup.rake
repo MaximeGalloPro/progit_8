@@ -182,7 +182,7 @@ namespace :db do
 
     # Import members as users with role mapping and deduplicate emails
     conn.execute(<<~SQL)
-      INSERT INTO users (id, name, email_address, password_digest, role, created_at, updated_at, provider, uid)
+      INSERT INTO users (id, name, email_address, password_digest, role, created_at, updated_at, provider, uid, phone_number)
       SELECT
         m.id,
         m.name,
@@ -201,7 +201,8 @@ namespace :db do
         m.created_at,
         m.updated_at,
         NULL,
-        NULL
+        NULL,
+        CAST(NULLIF(REGEXP_REPLACE(m.phone, '[^0-9]', ''), '') AS UNSIGNED)
       FROM temp_members m
       LEFT JOIN temp_roles r ON m.role_id = r.id
     SQL

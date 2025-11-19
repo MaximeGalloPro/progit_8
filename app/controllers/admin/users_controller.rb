@@ -21,11 +21,7 @@ module Admin
     def update
       authorize! :update, User
 
-      # Seuls les admins peuvent changer les rôles
-      filtered_params = user_params
-      filtered_params = filtered_params.except(:role) unless Current.user&.admin?
-
-      if @user.update(filtered_params)
+      if @user.update(user_params)
         redirect_to admin_users_path, notice: "Utilisateur #{@user.name} mis à jour avec succès"
       else
         render :edit, status: :unprocessable_entity
@@ -61,7 +57,11 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:name, :nickname, :email_address, :role)
+      if Current.user&.admin?
+        params.require(:user).permit(:name, :nickname, :email_address, :phone_number, :role)
+      else
+        params.require(:user).permit(:name, :nickname, :email_address, :phone_number)
+      end
     end
   end
 end

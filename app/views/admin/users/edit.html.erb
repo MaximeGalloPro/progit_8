@@ -57,6 +57,15 @@
                     class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
             </div>
 
+            <!-- Téléphone -->
+            <div>
+                <%= form.label :phone_number, "Téléphone", class: "block text-sm font-medium text-slate-300 mb-2" %>
+                <%= form.number_field :phone_number,
+                    pattern: "[0-9]*",
+                    inputmode: "numeric",
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
             <!-- Rôle -->
             <div>
                 <%= form.label :role, "Rôle", class: "block text-sm font-medium text-slate-300 mb-2" %>

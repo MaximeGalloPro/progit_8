@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_15_173105) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_19_214300) do
   create_table "hike_histories", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.decimal "carpooling_cost", precision: 5, scale: 2
     t.datetime "created_at", null: false
@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_173105) do
     t.string "name"
     t.string "nickname"
     t.string "password_digest"
+    t.string "phone_number"
     t.string "provider"
     t.integer "role", default: 0, null: false
     t.string "uid"
