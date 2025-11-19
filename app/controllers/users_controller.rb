@@ -10,7 +10,16 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  INVITATION_CODE = "progitmazan".freeze
+
   def create
+    unless params[:invitation_code] == INVITATION_CODE
+      @user = User.new(signup_params)
+      @user.errors.add(:base, t("flash.users.invalid_invitation_code"))
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     @user = User.new(signup_params)
     @user.role = :user # Default role
 

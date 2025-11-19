@@ -58,8 +58,15 @@ fr:
     errors:
       messages:
         taken: "est déjà utilisé"
+        too_short:
+          one: "est trop court (minimum %{count} caractère)"
+          other: "est trop court (minimum %{count} caractères)"
+        too_long:
+          one: "est trop long (maximum %{count} caractère)"
+          other: "est trop long (maximum %{count} caractères)"
         blank: "ne peut pas être vide"
-        invalid: "est invalide"
+        invalid: "n'est pas valide"
+        confirmation: "ne correspond pas à la confirmation"
       models:
         hike:
           attributes:
@@ -187,6 +194,8 @@ fr:
       name_label: "Nom complet"
       email_label: "Adresse email"
       password_label: "Mot de passe"
+      invitation_code_label: "Code d'invitation"
+      invitation_code_placeholder: "Entrez le code d'invitation"
       create_button: "Créer un compte"
       already_have_account: "Vous avez déjà un compte ?"
       sign_in: "Se connecter"
@@ -236,6 +245,7 @@ fr:
       link_failure: "Échec de la liaison du compte Google."
       sign_in_failure: "Échec de la connexion avec Google. Veuillez réessayer."
       auth_failure: "Échec de l'authentification : %{message}"
+      registration_requires_invitation: "La création de compte nécessite un code d'invitation. Veuillez utiliser le formulaire d'inscription."
     users:
       account_created: "Compte créé avec succès !"
       profile_updated: "Profil mis à jour avec succès."
@@ -245,3 +255,4 @@ fr:
       unlink_failure: "Échec de la dissociation du compte Google."
       set_password_first: "Vous devez définir un mot de passe avant de dissocier votre compte Google."
       must_be_signed_in: "Vous devez être connecté."
+      invalid_invitation_code: "Code d'invitation invalide."

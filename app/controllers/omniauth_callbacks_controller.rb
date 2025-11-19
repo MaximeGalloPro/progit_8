@@ -20,14 +20,22 @@ class OmniauthCallbacksController < ApplicationController
       end
     else
       # Normal OAuth login flow (auto-links if email exists)
-      user = User.from_omniauth(auth)
+      # Check if user already exists (login) or is new (registration)
+      existing_user = User.find_by(email_address: auth.info.email)
 
-      if user&.persisted?
-        start_new_session_for(user)
-        session[:login_method] = "google"
-        redirect_to user_path, notice: t("flash.omniauth_callbacks.google_success")
+      if existing_user
+        # Existing user - allow login and auto-link
+        user = User.from_omniauth(auth)
+        if user&.persisted?
+          start_new_session_for(user)
+          session[:login_method] = "google"
+          redirect_to user_path, notice: t("flash.omniauth_callbacks.google_success")
+        else
+          redirect_to new_session_path, alert: t("flash.omniauth_callbacks.sign_in_failure")
+        end
       else
-        redirect_to new_session_path, alert: t("flash.omniauth_callbacks.sign_in_failure")
+        # New user - block and require invitation code via standard registration
+        redirect_to new_user_path, alert: t("flash.omniauth_callbacks.registration_requires_invitation")
       end
     end
   end
