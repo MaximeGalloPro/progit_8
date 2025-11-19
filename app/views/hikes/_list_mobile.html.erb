@@ -81,7 +81,7 @@
                                 <button class="<%= button_classes %>" disabled>
                                     <i class="icon icon-sync-alt spin"></i>
                                 </button>
-                            <% elsif hike.openrunner_ref.blank? || hike.openrunner_ref == "0" || hike.openrunner_ref == 0 %>
+                            <% elsif !hike.openrunner_ref_valid? %>
                                 <button class="<%= button_classes %>" disabled title="Pas de référence OpenRunner">
                                     <i class="icon icon-ban text-danger"></i>
                                 </button>

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       end
       collection do
           get :fetch_openrunner_details
+          get :check_updating_status
       end
   end
   resources :hike_histories

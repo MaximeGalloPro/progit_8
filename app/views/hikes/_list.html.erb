@@ -59,10 +59,13 @@
 
                                 <% if can?(:update, Hike) %>
                                     <% if hike.updating? %>
-                                        <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-400 cursor-not-allowed" disabled>
+                                        <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-400 cursor-not-allowed"
+                                                disabled
+                                                data-hike-updating="true"
+                                                data-hike-id="<%= hike.id %>">
                                             <i class="icon icon-sync-alt spin text-sm"></i>
                                         </button>
-                                    <% elsif hike.openrunner_ref.blank? || hike.openrunner_ref == 0 || hike.openrunner_ref == "0" %>
+                                    <% elsif !hike.openrunner_ref_valid? %>
                                         <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-red-400 cursor-not-allowed"
                                                 disabled
                                                 title="Pas de référence OpenRunner">

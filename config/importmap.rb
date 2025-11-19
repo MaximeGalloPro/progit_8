@@ -12,6 +12,7 @@ pin "datatable_init"
 
 # Hikes and Map
 pin "hikes"
+pin "hikes_polling"
 pin "map"
 
 # Modals

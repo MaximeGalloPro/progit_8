@@ -1,4 +1,4 @@
-<% if hike.hike_path&.coordinates.blank? and (hike.openrunner_ref.blank? or hike.openrunner_ref == 0 or hike.openrunner_ref == "0") %>
+<% if hike.hike_path&.coordinates.blank? && !hike.openrunner_ref_valid? %>
     <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-red-400 cursor-not-allowed"
             disabled
             title="Pas de référence OpenRunner">

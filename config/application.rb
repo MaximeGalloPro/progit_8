@@ -27,5 +27,9 @@ module App
     # Set default locale to French
     config.i18n.default_locale = :fr
     config.i18n.available_locales = [ :fr, :en ]
+
+    # Use solid_queue for background jobs
+    config.active_job.queue_adapter = :solid_queue
+    config.solid_queue.connects_to = { database: { writing: :queue } }
   end
 end

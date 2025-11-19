@@ -127,6 +127,10 @@ class Hike < ApplicationRecord
         latest_history&.user&.name
     end
 
+    def openrunner_ref_valid?
+        openrunner_ref.present? && openrunner_ref != 0 && openrunner_ref != "0"
+    end
+
     private
 
     def convert_distance_separator

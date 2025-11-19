@@ -56,6 +56,17 @@ class HikesController < ApplicationController
         end
     end
 
+    def check_updating_status
+        hike_ids = params[:ids]&.split(",")&.map(&:to_i) || []
+        return render json: { updating: [], completed: [] } if hike_ids.empty?
+
+        hikes = Hike.where(id: hike_ids)
+        updating = hikes.where(updating: true).pluck(:id)
+        completed = hike_ids - updating
+
+        render json: { updating: updating, completed: completed }
+    end
+
     def destroy
         @hike = find_hike
         @hike.destroy

@@ -157,6 +157,8 @@ fr:
       success: "Le parcours a été mis à jour avec succès."
     destroy:
       success: "Le parcours a été supprimé avec succès."
+    refresh_from_openrunner:
+      updating: "Mise à jour de %{name} en cours..."
 
   hike_histories:
     create:
