@@ -57,11 +57,9 @@ module Admin
     end
 
     def user_params
-      if Current.user&.admin?
-        params.require(:user).permit(:name, :nickname, :email_address, :phone_number, :role)
-      else
-        params.require(:user).permit(:name, :nickname, :email_address, :phone_number)
-      end
+      base_params = params.require(:user).permit(:name, :nickname, :email_address, :phone_number)
+      base_params[:role] = params[:user][:role] if Current.user&.admin? && params[:user][:role].present?
+      base_params
     end
   end
 end
