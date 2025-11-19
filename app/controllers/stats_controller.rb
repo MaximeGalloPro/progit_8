@@ -7,6 +7,7 @@ class StatsController < ApplicationController
     allow_unauthenticated_access
     skip_load_and_authorize_resource
     skip_authorization_check
+    before_action :resume_session
 
     def dashboard
         @stats = {
