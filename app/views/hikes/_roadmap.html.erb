@@ -1,5 +1,10 @@
+<%
+  # Définir les classes par défaut si non fournies
+  button_class ||= "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-all"
+  disabled_class ||= "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-red-400 cursor-not-allowed"
+%>
 <% if hike.hike_path&.coordinates.blank? && !hike.openrunner_ref_valid? %>
-    <button class="inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-red-400 cursor-not-allowed"
+    <button class="<%= disabled_class %>"
             disabled
             title="Pas de référence OpenRunner">
         <i class="icon icon-ban text-sm"></i>
@@ -9,7 +14,7 @@
     <%= link_to_if_authorized url,
                               action: :read,
                               resource: Hike,
-                              class: "inline-flex items-center justify-center w-8 h-8 rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-all",
+                              class: button_class,
                               target: "_blank",
                               title: "Voir sur OpenRunner" do %>
         <i class="icon icon-mountain text-sm"></i>

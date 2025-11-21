@@ -4,7 +4,14 @@
     <div class="flex items-center space-x-6">
       <div class="flex-shrink-0">
         <% if @user.avatar_url.present? %>
-          <%= image_tag @user.avatar_url_with_size(200), alt: @user.name, class: "h-24 w-24 rounded-full ring-4 ring-blue-500/20" %>
+          <%= image_tag @user.avatar_url_with_size(200),
+              alt: @user.name,
+              loading: "lazy",
+              onerror: "this.style.display='none'; this.nextElementSibling.style.display='flex';",
+              class: "h-24 w-24 rounded-full ring-4 ring-blue-500/20" %>
+          <div class="h-24 w-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hidden items-center justify-center ring-4 ring-blue-500/20">
+            <span class="text-3xl font-bold text-white"><%= @user.name&.first&.upcase || "?" %></span>
+          </div>
         <% else %>
           <div class="h-24 w-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center ring-4 ring-blue-500/20">
             <span class="text-3xl font-bold text-white"><%= @user.name&.first&.upcase || "?" %></span>

@@ -4,7 +4,9 @@
             can?(:destroy, Hike) ||
             can?(:read, HikeHistory)
     %>
-    <div class="overflow-x-auto bg-slate-800 rounded-2xl shadow-2xl border border-slate-700">
+
+    <!-- Version desktop (tableau) -->
+    <div class="hidden md:block overflow-x-auto bg-slate-800 rounded-2xl shadow-2xl border border-slate-700">
         <table data-datatable class="min-w-full divide-y divide-slate-700">
             <thead class="bg-slate-700/50">
             <tr>
@@ -101,6 +103,118 @@
             <% end %>
             </tbody>
         </table>
+    </div>
+
+    <!-- Version mobile (cardes) -->
+    <div class="md:hidden space-y-4">
+        <% @results.each do |hike| %>
+            <div class="bg-slate-800 rounded-2xl shadow-2xl p-4 border border-slate-700">
+                <!-- Header -->
+                <div class="mb-3">
+                    <h3 class="text-lg font-bold text-white mb-1"><%= hike.trail_name %></h3>
+                    <div class="flex items-center text-slate-400 text-sm">
+                        <i class="icon icon-map-marker-alt mr-1"></i>
+                        <%= hike.starting_point || "Non défini" %>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="bg-slate-700/50 rounded-lg p-2">
+                        <div class="text-xs text-slate-400">Distance</div>
+                        <div class="text-white font-medium"><%= hike.distance_km || "-" %> km</div>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-2">
+                        <div class="text-xs text-slate-400">D+ / D-</div>
+                        <div class="text-white font-medium"><%= hike.elevation_gain || "-" %> / <%= hike.elevation_loss || "-" %> m</div>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-2">
+                        <div class="text-xs text-slate-400">Altitude</div>
+                        <div class="text-white font-medium"><%= hike.altitude_min || "-" %> - <%= hike.altitude_max || "-" %> m</div>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-2">
+                        <div class="text-xs text-slate-400">Difficulté</div>
+                        <div class="text-white font-medium"><%= hike.difficulty_text %></div>
+                    </div>
+                </div>
+
+                <!-- Dernière rando -->
+                <div class="bg-slate-700/30 rounded-lg p-2 mb-3 text-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400">
+                            <i class="far fa-calendar mr-1"></i>
+                            <%= hike.last_hiking_date&.strftime("%d/%m/%Y") || "Jamais" %>
+                        </span>
+                        <span class="text-slate-300"><%= hike.last_guide_name || "-" %></span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <% if has_any_permission %>
+                    <div class="flex gap-2 flex-wrap">
+                        <%= render partial: "roadmap", locals: {
+                          hike: hike,
+                          button_class: "flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all text-sm",
+                          disabled_class: "flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-red-400 cursor-not-allowed text-sm"
+                        } %>
+
+                        <%= link_to_if_authorized hike_histories_path(hike_id: hike.id),
+                                                  action: :read,
+                                                  resource: HikeHistory,
+                                                  class: "flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all text-sm",
+                                                  title: "Historique" do %>
+                            <i class="icon icon-history mr-1"></i> Historique
+                        <% end %>
+
+                        <%= link_to_if_authorized edit_hike_path(hike),
+                                                  action: :update,
+                                                  resource: Hike,
+                                                  class: "flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all text-sm",
+                                                  title: "Éditer" do %>
+                            <i class="icon icon-pen mr-1"></i> Éditer
+                        <% end %>
+
+                        <% if can?(:update, Hike) %>
+                            <% if hike.updating? %>
+                                <button class="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-slate-400 cursor-not-allowed text-sm"
+                                        disabled
+                                        data-hike-updating="true"
+                                        data-hike-id="<%= hike.id %>">
+                                    <i class="icon icon-sync-alt spin mr-1"></i> Mise à jour...
+                                </button>
+                            <% elsif !hike.openrunner_ref_valid? %>
+                                <button class="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-red-400 cursor-not-allowed text-sm"
+                                        disabled
+                                        title="Pas de référence OpenRunner">
+                                    <i class="icon icon-ban mr-1"></i> N/A
+                                </button>
+                            <% else %>
+                                <%= button_to_if_authorized refresh_from_openrunner_hike_path(hike, redirect_path: hikes_path),
+                                                           action: :update,
+                                                           resource: Hike,
+                                                           class: "flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all text-sm",
+                                                           title: "Dernière mise à jour: #{hike.last_update_attempt&.strftime('%d/%m/%Y %H:%M') || 'Jamais'}",
+                                                           data: { turbo: false },
+                                                           params: { search: params[:search] } do %>
+                                    <i class="icon icon-sync-alt mr-1"></i> MAJ
+                                <% end %>
+                            <% end %>
+                        <% end %>
+
+                        <%= button_to_if_authorized hike_path(hike),
+                                                    method: :delete,
+                                                    action: :destroy,
+                                                    resource: Hike,
+                                                    class: "flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-700 text-red-400 hover:bg-red-900/50 transition-all text-sm",
+                                                    title: "Supprimer",
+                                                    form: { style: 'display: inline-block', onsubmit: "return confirmDelete(event, 'ce parcours')" },
+                                                    form_class: 'button_to' do %>
+                            <i class="icon icon-trash mr-1"></i> Supprimer
+                        <% end %>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
     </div>
 <% elsif params[:search].present? %>
     <div class="rounded-lg bg-blue-500/10 border border-blue-500/20 p-4 shadow-lg">

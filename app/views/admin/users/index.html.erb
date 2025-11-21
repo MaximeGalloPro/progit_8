@@ -29,7 +29,14 @@
                                 <div class="flex items-center">
                                     <div class="h-10 w-10 flex-shrink-0">
                                         <% if user.avatar_url.present? %>
-                                            <%= image_tag user.avatar_url_with_size(80), alt: user.name, class: "h-10 w-10 rounded-full ring-2 ring-blue-500/20" %>
+                                            <%= image_tag user.avatar_url_with_size(80),
+                                                alt: user.name,
+                                                loading: "lazy",
+                                                onerror: "this.style.display='none'; this.nextElementSibling.style.display='flex';",
+                                                class: "h-10 w-10 rounded-full ring-2 ring-blue-500/20" %>
+                                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hidden items-center justify-center ring-2 ring-blue-500/20">
+                                                <span class="text-sm font-semibold text-white"><%= user.name&.first&.upcase || "?" %></span>
+                                            </div>
                                         <% else %>
                                             <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center ring-2 ring-blue-500/20">
                                                 <span class="text-sm font-semibold text-white"><%= user.name&.first&.upcase || "?" %></span>
@@ -84,7 +91,14 @@
                         <div class="flex items-center">
                             <div class="h-10 w-10 flex-shrink-0">
                                 <% if user.avatar_url.present? %>
-                                    <%= image_tag user.avatar_url_with_size(80), alt: user.name, class: "h-10 w-10 rounded-full ring-2 ring-blue-500/20" %>
+                                    <%= image_tag user.avatar_url_with_size(80),
+                                        alt: user.name,
+                                        loading: "lazy",
+                                        onerror: "this.style.display='none'; this.nextElementSibling.style.display='flex';",
+                                        class: "h-10 w-10 rounded-full ring-2 ring-blue-500/20" %>
+                                    <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hidden items-center justify-center ring-2 ring-blue-500/20">
+                                        <span class="text-sm font-semibold text-white"><%= user.name&.first&.upcase || "?" %></span>
+                                    </div>
                                 <% else %>
                                     <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center ring-2 ring-blue-500/20">
                                         <span class="text-sm font-semibold text-white"><%= user.name&.first&.upcase || "?" %></span>
