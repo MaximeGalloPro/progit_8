@@ -8,9 +8,16 @@ class HikeHistoriesController < ApplicationController
     before_action :set_users, only: %i[new edit create update]
     before_action :set_hike_history, only: %i[edit update destroy]
 
+    PER_PAGE = 20
+
     def index
         @hike = Hike.find_by(id: params[:hike_id]) if params[:hike_id].present?
-        @results = fetch_hike_histories
+        @page = (params[:page] || 1).to_i
+
+        base_query = fetch_hike_histories_base
+        @total_count = base_query.count
+        @total_pages = (@total_count.to_f / PER_PAGE).ceil
+        @results = base_query.limit(PER_PAGE).offset((@page - 1) * PER_PAGE)
     end
 
     def new
@@ -61,7 +68,7 @@ class HikeHistoriesController < ApplicationController
         @hike_history = HikeHistory.find_by(id: params[:id])
     end
 
-    def fetch_hike_histories
+    def fetch_hike_histories_base
         histories = HikeHistory.includes(:hike, :user).order(hiking_date: :desc)
         histories = histories.where(hike_id: params[:hike_id]) if params[:hike_id].present?
         histories

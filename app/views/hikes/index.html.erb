@@ -46,4 +46,25 @@
 
     <!-- Liste des randonnées -->
     <%= render partial: "list" %>
+
+    <!-- Pagination -->
+    <% if @total_pages > 1 %>
+        <div class="flex items-center justify-between mt-6">
+            <div class="text-sm text-slate-400">
+                Page <%= @page %> sur <%= @total_pages %> (<%= @total_count %> randonnées)
+            </div>
+            <div class="flex gap-2">
+                <% if @page > 1 %>
+                    <%= link_to hikes_path(page: @page - 1, search: params[:search]), class: "px-4 py-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all text-sm" do %>
+                        ← Précédent
+                    <% end %>
+                <% end %>
+                <% if @page < @total_pages %>
+                    <%= link_to hikes_path(page: @page + 1, search: params[:search]), class: "px-4 py-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all text-sm" do %>
+                        Suivant →
+                    <% end %>
+                <% end %>
+            </div>
+        </div>
+    <% end %>
 </div>

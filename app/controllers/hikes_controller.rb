@@ -4,8 +4,14 @@
 # for hikes, OpenRunner integration for trail details, and associated path data.
 # Provides search functionality and history tracking for hikes.
 class HikesController < ApplicationController
+    PER_PAGE = 20
+
     def index
-        @results = fetch_hikes
+        @page = (params[:page] || 1).to_i
+        base_query = fetch_hikes_base
+        @total_count = base_query.count
+        @total_pages = (@total_count.to_f / PER_PAGE).ceil
+        @results = base_query.limit(PER_PAGE).offset((@page - 1) * PER_PAGE)
         @results = sort_hikes_by_date(@results)
     end
 
@@ -174,7 +180,7 @@ class HikesController < ApplicationController
         params
     end
 
-    def fetch_hikes
+    def fetch_hikes_base
         Hike.with_latest_history
             .then { |scope| apply_search(scope) }
             .order_by_latest_date
