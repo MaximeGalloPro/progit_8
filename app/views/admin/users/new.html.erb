@@ -1,0 +1,108 @@
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white">Créer un utilisateur</h1>
+        <%= link_to "← Retour", admin_users_path, class: "text-slate-300 hover:text-blue-400 text-sm font-medium transition-colors" %>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="bg-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 border border-slate-700">
+        <%= form_with model: [:admin, @user], local: true, class: "space-y-6" do |form| %>
+            <% if @user.errors.any? %>
+                <div class="rounded-lg bg-gradient-to-r from-red-500/10 to-rose-500/10 border border-red-500/20 p-4">
+                    <h3 class="text-sm font-medium text-red-400 mb-2">
+                        <%= pluralize(@user.errors.count, "erreur") %> :
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-red-300">
+                        <% @user.errors.full_messages.each do |message| %>
+                            <li><%= message %></li>
+                        <% end %>
+                    </ul>
+                </div>
+            <% end %>
+
+            <!-- Champs obligatoires -->
+            <p class="text-xs text-slate-400"><span class="text-red-400">*</span> Champs obligatoires</p>
+
+            <!-- Email -->
+            <div>
+                <%= form.label :email_address, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Email <span class="text-red-400">*</span>
+                <% end %>
+                <%= form.email_field :email_address,
+                    required: true,
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
+            <!-- Mot de passe -->
+            <div>
+                <%= form.label :password, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Mot de passe <span class="text-red-400">*</span>
+                <% end %>
+                <%= form.text_field :password,
+                    required: true,
+                    value: ENV["INVITATION_CODE"],
+                    autocomplete: "new-password",
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
+            <!-- Confirmation mot de passe -->
+            <div>
+                <%= form.label :password_confirmation, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Confirmer le mot de passe <span class="text-red-400">*</span>
+                <% end %>
+                <%= form.text_field :password_confirmation,
+                    required: true,
+                    value: ENV["INVITATION_CODE"],
+                    autocomplete: "new-password",
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
+            <!-- Nom -->
+            <div>
+                <%= form.label :name, class: "block text-sm font-medium text-slate-300 mb-2" do %>
+                    Nom <span class="text-red-400">*</span>
+                <% end %>
+                <%= form.text_field :name,
+                    required: true,
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
+            <!-- Séparateur champs optionnels -->
+            <div class="border-t border-slate-700 pt-6">
+                <p class="text-xs text-slate-400 mb-4">Champs optionnels</p>
+            </div>
+
+            <!-- Surnom -->
+            <div>
+                <%= form.label :nickname, "Surnom", class: "block text-sm font-medium text-slate-300 mb-2" %>
+                <%= form.text_field :nickname,
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
+            <!-- Téléphone -->
+            <div>
+                <%= form.label :phone_number, "Téléphone", class: "block text-sm font-medium text-slate-300 mb-2" %>
+                <%= form.number_field :phone_number,
+                    pattern: "[0-9]*",
+                    inputmode: "numeric",
+                    class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white placeholder:text-slate-400 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+            </div>
+
+            <!-- Rôle -->
+            <div>
+                <%= form.label :role, "Rôle", class: "block text-sm font-medium text-slate-300 mb-2" %>
+                <%= form.select :role,
+                    User.roles.keys.map { |role| [role.humanize, role] },
+                    { selected: "user" },
+                    { class: "block w-full rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all" } %>
+            </div>
+
+            <!-- Boutons -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <%= form.submit "Créer l'utilisateur", class: "rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] cursor-pointer" %>
+                <%= link_to "Annuler", admin_users_path, class: "rounded-lg bg-slate-700 px-6 py-3 text-slate-300 text-center border border-slate-600 hover:bg-slate-600 transition-all" %>
+            </div>
+        <% end %>
+    </div>
+</div>

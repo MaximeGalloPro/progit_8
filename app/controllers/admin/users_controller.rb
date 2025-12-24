@@ -1,8 +1,9 @@
 module Admin
   class UsersController < ApplicationController
     before_action :authorize_admin_or_moderator
-    before_action :set_user, only: [ :edit, :update, :update_role ]
-    before_action :prevent_self_edit, only: [ :edit, :update, :update_role ]
+    before_action :set_user, only: [ :edit, :update, :update_role, :destroy ]
+    before_action :authorize_admin, only: [ :new, :create, :destroy ]
+    before_action :prevent_self_edit, only: [ :edit, :update, :update_role, :destroy ]
 
     PER_PAGE = 10
 
@@ -12,6 +13,22 @@ module Admin
       @total_pages = (@total_users.to_f / PER_PAGE).ceil
       @users = User.order(created_at: :desc).limit(PER_PAGE).offset((@page - 1) * PER_PAGE)
       authorize! :update, User
+    end
+
+    def new
+      @user = User.new
+      authorize! :manage, User
+    end
+
+    def create
+      @user = User.new(create_user_params)
+      authorize! :manage, User
+
+      if @user.save
+        redirect_to admin_users_path, notice: "Utilisateur #{@user.name} créé avec succès"
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
 
     def edit
@@ -38,6 +55,13 @@ module Admin
       end
     end
 
+    def destroy
+      authorize! :manage, User
+      user_name = @user.name || @user.email_address
+      @user.destroy
+      redirect_to admin_users_path, notice: "Utilisateur #{user_name} supprimé avec succès"
+    end
+
     private
 
     def set_user
@@ -60,6 +84,16 @@ module Admin
       base_params = params.require(:user).permit(:name, :nickname, :email_address, :phone_number)
       base_params[:role] = params[:user][:role] if Current.user&.admin? && params[:user][:role].present?
       base_params
+    end
+
+    def create_user_params
+      params.require(:user).permit(:name, :nickname, :email_address, :phone_number, :password, :password_confirmation, :role)
+    end
+
+    def authorize_admin
+      unless Current.user&.admin?
+        redirect_to admin_users_path, alert: "Seul un administrateur peut créer des utilisateurs."
+      end
     end
   end
 end

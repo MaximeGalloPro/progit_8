@@ -5,6 +5,10 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-white">Gestion des utilisateurs</h1>
             <p class="mt-2 text-sm text-slate-400">Liste de tous les utilisateurs avec leur nom, email et rôle.</p>
         </div>
+        <%= link_to new_admin_user_path, class: "rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] flex items-center justify-center gap-2" do %>
+            <i class="icon icon-plus"></i>
+            <span>Créer un utilisateur</span>
+        <% end %>
     </div>
 
     <!-- Tableau des utilisateurs -->
@@ -71,11 +75,22 @@
                                 <%= user.created_at.strftime("%d/%m/%Y") %>
                             </td>
                             <td class="px-4 py-3 text-sm whitespace-nowrap">
-                                <%= link_to edit_admin_user_path(user),
-                                            class: "p-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
-                                            title: "Editer" do %>
-                                    <i class="icon icon-pen text-xs"></i>
-                                <% end %>
+                                <div class="flex gap-2">
+                                    <%= link_to edit_admin_user_path(user),
+                                                class: "p-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
+                                                title: "Editer" do %>
+                                        <i class="icon icon-pen text-xs"></i>
+                                    <% end %>
+                                    <% if Current.user&.admin? && user.id != Current.user.id %>
+                                        <%= button_to admin_user_path(user),
+                                                      method: :delete,
+                                                      class: "p-2 rounded-lg bg-slate-700 text-red-400 border border-slate-600 hover:bg-red-500/20 transition-all cursor-pointer",
+                                                      title: "Supprimer",
+                                                      form: { onsubmit: "return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')" } do %>
+                                            <i class="icon icon-trash text-xs"></i>
+                                        <% end %>
+                                    <% end %>
+                                </div>
                             </td>
                         </tr>
                     <% end %>
@@ -110,11 +125,22 @@
                                 <div class="text-slate-400 text-xs"><%= user.nickname.presence || "Pas de surnom" %></div>
                             </div>
                         </div>
-                        <%= link_to edit_admin_user_path(user),
-                                    class: "p-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
-                                    title: "Editer" do %>
-                            <i class="icon icon-pen text-xs"></i>
-                        <% end %>
+                        <div class="flex gap-2">
+                            <%= link_to edit_admin_user_path(user),
+                                        class: "p-2 rounded-lg bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all",
+                                        title: "Editer" do %>
+                                <i class="icon icon-pen text-xs"></i>
+                            <% end %>
+                            <% if Current.user&.admin? && user.id != Current.user.id %>
+                                <%= button_to admin_user_path(user),
+                                              method: :delete,
+                                              class: "p-2 rounded-lg bg-slate-700 text-red-400 border border-slate-600 hover:bg-red-500/20 transition-all cursor-pointer",
+                                              title: "Supprimer",
+                                              form: { onsubmit: "return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')" } do %>
+                                    <i class="icon icon-trash text-xs"></i>
+                                <% end %>
+                            <% end %>
+                        </div>
                     </div>
                     <div class="space-y-2 text-sm">
                         <div><span class="text-slate-400">Email :</span> <span class="text-slate-300"><%= user.email_address %></span></div>

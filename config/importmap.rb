@@ -18,3 +18,6 @@ pin "map"
 # Modals
 pin "modal"
 pin "guide_modal"
+
+# Searchable Select
+pin "searchable_select"

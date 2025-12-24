@@ -11,6 +11,12 @@ class HikeHistory < ApplicationRecord
     validates :departure_time, presence: true
     validates :user_id, presence: true
 
+    # Validation d'unicité pour éviter deux randonnées du même parcours le même jour
+    validates :hike_id, uniqueness: {
+      scope: :hiking_date,
+      message: "Cette randonnée est déjà programmée pour cette date"
+    }
+
     # Validations numériques avec contraintes spécifiques
     validates :carpooling_cost,
               numericality: { greater_than_or_equal_to: 0 },

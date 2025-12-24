@@ -6,7 +6,7 @@
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
     <!-- Boutons d'action -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
         <%= link_to new_hike_history_path(past: true), class: "rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-white text-center shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] flex items-center justify-center gap-2" do %>
             <i class="icon icon-history"></i>
             <span>Ajouter une randonnée passée</span>
@@ -20,11 +20,6 @@
         <%= link_to new_hike_path, class: "rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-white text-center shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] flex items-center justify-center gap-2" do %>
             <i class="icon icon-map-marked-alt"></i>
             <span>Ajouter un nouveau parcours</span>
-        <% end %>
-
-        <%= link_to "#", class: "rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-white text-center shadow-lg hover:from-blue-500 hover:to-blue-400 transition-all hover:scale-[1.02] flex items-center justify-center gap-2", title: "À venir" do %>
-            <i class="icon icon-users"></i>
-            <span>Gérer les membres</span>
         <% end %>
     </div>
 

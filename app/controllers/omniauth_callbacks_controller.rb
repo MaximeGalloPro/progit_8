@@ -29,7 +29,7 @@ class OmniauthCallbacksController < ApplicationController
         if user&.persisted?
           start_new_session_for(user)
           session[:login_method] = "google"
-          redirect_to user_path, notice: t("flash.omniauth_callbacks.google_success")
+          redirect_to stats_dashboard_path, notice: t("flash.omniauth_callbacks.google_success")
         else
           redirect_to new_session_path, alert: t("flash.omniauth_callbacks.sign_in_failure")
         end
@@ -86,7 +86,7 @@ class OmniauthCallbacksController < ApplicationController
       session.delete(:pending_oauth)
       start_new_session_for(user)
       session[:login_method] = "google"
-      redirect_to user_path, notice: t("flash.users.account_created")
+      redirect_to stats_dashboard_path, notice: t("flash.users.account_created")
     else
       @email = oauth_data["email"]
       @name = oauth_data["name"]

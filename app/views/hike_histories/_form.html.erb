@@ -1,3 +1,7 @@
+<script type="module">
+    import "searchable_select"
+</script>
+
 <%= form_with(model: @hike_history, local: true, class: "space-y-6") do |f| %>
     <% if @hike_history.errors.any? %>
         <div class="rounded-lg bg-red-500/10 border border-red-500/20 p-4 shadow-lg">
@@ -26,13 +30,13 @@
                 <%= f.label :hike_id, class: "block text-sm font-medium text-slate-300 mb-2" do %>
                     Randonnée <span class="text-red-400">*</span>
                 <% end %>
-                <div class="flex gap-2 max-w-full">
+                <div class="flex gap-2 w-full">
                     <%= f.collection_select :hike_id,
                                             @hikes,
                                             :id,
                                             ->(hike) { "#{hike.trail_name} (#{hike.starting_point})" },
                                             { prompt: "Rechercher une randonnée..." },
-                                            { class: "flex-1 min-w-0 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all select2 #{@hike_history.errors[:hike_id].any? ? 'border-red-500 focus:ring-red-500' : ''}" } %>
+                                            { class: "flex-1 min-w-0 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:hike_id].any? ? 'border-red-500 focus:ring-red-500' : ''}", data: { searchable_select: true } } %>
                     <%= link_to new_hike_path,
                                 class: "flex-shrink-0 inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all whitespace-nowrap",
                                 title: "Ajouter un nouveau parcours" do %>
@@ -51,13 +55,13 @@
                 <%= f.label :user_id, class: "block text-sm font-medium text-slate-300 mb-2" do %>
                     Guide <span class="text-red-400">*</span>
                 <% end %>
-                <div class="flex gap-2 max-w-full">
+                <div class="flex gap-2 w-full">
                     <%= f.collection_select :user_id,
                                             @users,
                                             :id,
                                             ->(user) { user.name.present? ? "#{user.name} (#{user.email_address})" : user.email_address },
                                             { prompt: "Sélectionnez un guide..." },
-                                            { id: "hike_history_user_id", class: "flex-1 min-w-0 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:user_id].any? ? 'border-red-500 focus:ring-red-500' : ''}" } %>
+                                            { id: "hike_history_user_id", class: "flex-1 min-w-0 rounded-lg bg-slate-700 px-4 py-3 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500 transition-all #{@hike_history.errors[:user_id].any? ? 'border-red-500 focus:ring-red-500' : ''}", data: { searchable_select: true } } %>
                     <button type="button"
                             onclick="openGuideModal()"
                             class="inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-3 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-all whitespace-nowrap"

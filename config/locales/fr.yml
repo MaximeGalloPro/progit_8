@@ -170,8 +170,12 @@ fr:
   hike_histories:
     create:
       success: "La randonnée a été créée avec succès."
+      validation_error: "Impossible de créer la randonnée. Veuillez corriger les erreurs."
+      invalid_params: "Paramètres invalides. Veuillez remplir tous les champs obligatoires."
     update:
       success: "La randonnée a été mise à jour avec succès."
+      validation_error: "Impossible de mettre à jour la randonnée. Veuillez corriger les erreurs."
+      invalid_params: "Paramètres invalides. Veuillez remplir tous les champs obligatoires."
     destroy:
       success: "La randonnée a été supprimée avec succès."
 
