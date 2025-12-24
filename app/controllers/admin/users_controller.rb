@@ -87,7 +87,9 @@ module Admin
     end
 
     def create_user_params
-      params.require(:user).permit(:name, :nickname, :email_address, :phone_number, :password, :password_confirmation, :role)
+      base_params = params.require(:user).permit(:name, :nickname, :email_address, :phone_number, :password, :password_confirmation)
+      base_params[:role] = params[:user][:role] if Current.user&.admin? && params[:user][:role].present?
+      base_params
     end
 
     def authorize_admin
