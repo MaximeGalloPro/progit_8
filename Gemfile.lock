@@ -387,7 +387,8 @@ GEM
     thruster (0.1.16-x86_64-darwin)
     thruster (0.1.16-x86_64-linux)
     timeout (0.4.4)
-    trilogy (2.9.0)
+    trilogy (2.10.0)
+      bigdecimal
     tsort (0.2.0)
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
@@ -450,7 +451,7 @@ DEPENDENCIES
   stimulus-rails
   tailwindcss-rails
   thruster
-  trilogy (~> 2.7)
+  trilogy (~> 2.10)
   turbo-rails
   tzinfo-data
   web-console
