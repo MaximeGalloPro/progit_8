@@ -1,6 +1,6 @@
 namespace :db do
   desc "Import data from backup SQL file"
-  task :import_backup, [:filename] => :environment do |_t, args|
+  task :import_backup, [ :filename ] => :environment do |_t, args|
     filename = args[:filename] || "backup-maria.sql"
     backup_file = Rails.root.join("db/backup", filename)
 
