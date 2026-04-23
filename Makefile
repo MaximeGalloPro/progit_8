@@ -44,3 +44,6 @@ db-seed:
 
 init:
 	docker compose run --rm web rails app:init
+
+cleanup-parasites:
+	docker compose run --rm web rails users:cleanup_parasites

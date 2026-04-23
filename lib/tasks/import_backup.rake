@@ -1,7 +1,8 @@
 namespace :db do
   desc "Import data from backup SQL file"
-  task import_backup: :environment do
-    backup_file = Rails.root.join("db/backup/backup-maria.sql")
+  task :import_backup, [:filename] => :environment do |_t, args|
+    filename = args[:filename] || "backup-maria.sql"
+    backup_file = Rails.root.join("db/backup", filename)
 
     unless File.exist?(backup_file)
       puts "❌ Backup file not found: #{backup_file}"
