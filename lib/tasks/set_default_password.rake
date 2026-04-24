@@ -1,17 +1,29 @@
 # frozen_string_literal: true
 
+require "io/console"
+
 namespace :users do
-  desc "Définit le mot de passe de tous les users à 'progitmazan'."
+  desc "Définit le même mot de passe pour tous les users (saisie interactive)."
   task set_default_password: :environment do
-    default_password = "progitmazan"
     users = User.all
 
     puts "🔑 Reset du mot de passe pour tous les users"
-    puts "   Users concernés         : #{users.count}"
-    puts "   Nouveau mot de passe    : #{default_password}"
+    puts "   Users concernés : #{users.count}"
 
     if users.empty?
       puts "\n✅ Aucun user à mettre à jour"
+      next
+    end
+
+    print "\nNouveau mot de passe : "
+    password = STDIN.noecho(&:gets)&.chomp
+    puts
+    print "Confirmer            : "
+    confirmation = STDIN.noecho(&:gets)&.chomp
+    puts
+
+    if password.blank? || password != confirmation
+      puts "\n❌ Mot de passe vide ou non identique — abandon"
       next
     end
 
@@ -23,7 +35,7 @@ namespace :users do
 
     ActiveRecord::Base.transaction do
       users.find_each do |user|
-        user.password = default_password
+        user.password = password
         if user.save
           updated += 1
         else
