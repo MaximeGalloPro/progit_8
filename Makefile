@@ -47,3 +47,6 @@ init:
 
 cleanup-parasites:
 	docker compose run --rm web rails users:cleanup_parasites
+
+set-default-password:
+	docker compose run --rm web rails users:set_default_password
