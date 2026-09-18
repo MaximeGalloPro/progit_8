@@ -190,6 +190,7 @@ fr:
       or_continue: "Ou continuer avec"
       no_account: "Vous n'avez pas de compte ?"
       create_account: "Créer un compte"
+      test_email: "Tester l'envoi d'un email"
 
   users:
     new:
