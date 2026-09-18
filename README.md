@@ -51,6 +51,11 @@ ProGit 8 est une application web permettant de :
    GOOGLE_CLIENT_SECRET=your_google_client_secret
    ```
 
+   Pour activer les emails transactionnels avec Resend, valider le domaine
+   `progit.club` dans Resend puis configurer les variables SMTP listées dans
+   `.env.example`. La seule valeur secrète est `SMTP_PASSWORD`, qui contient la
+   clé API Resend et doit rester dans les variables d'environnement du serveur.
+
 3. **Build des images Docker**
    ```bash
    make build
