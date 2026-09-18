@@ -243,6 +243,41 @@ make rubocop        # Vérifier
 make rubocop-fix    # Corriger automatiquement
 ```
 
+## Déploiement
+
+`progit.club` tourne sur Coolify à partir d'une image construite par la CI.
+
+Enchaînement sur un push vers `main` ([.github/workflows/ci.yml](./.github/workflows/ci.yml)) :
+
+1. `scan_ruby` / `scan_js` / `lint`
+2. `build` — construit le [Dockerfile](./Dockerfile) et pousse
+   `docker-registry.sousa-dev.com/progit-8` avec deux tags : `latest` et le SHA du commit
+3. `deploy` — ping l'API Coolify, qui tire `latest` et redémarre le service
+
+Sur une PR, `build` construit l'image sans la pousser : le Dockerfile est validé avant le merge.
+
+### Secrets GitHub requis
+
+| Secret | Usage |
+| --- | --- |
+| `REGISTRY` | Hôte du registry (optionnel, défaut `docker-registry.sousa-dev.com`) |
+| `REGISTRY_USERNAME` / `REGISTRY_PASSWORD` | Push de l'image |
+| `COOLIFY_API_TOKEN` / `COOLIFY_DEPLOY_URL` | Déclenchement du redéploiement |
+
+### Côté Coolify
+
+La stack à utiliser est dans [deploy/coolify-compose.yml](./deploy/coolify-compose.yml). Elle
+tire l'image du registry au lieu de la construire sur le serveur.
+
+L'app tourne en `RAILS_ENV=production` (l'image est construite avec
+`BUNDLE_WITHOUT=development`, elle ne peut pas démarrer en mode development), ce qui implique
+les 4 bases déclarées dans [config/database.yml](./config/database.yml) : `DATABASE_NAME`,
+`DATABASE_CACHE_NAME`, `DATABASE_QUEUE_NAME`, `DATABASE_CABLE_NAME`.
+
+### Rollback
+
+Remplacer `:latest` par `:<sha>` dans la stack Coolify et redéployer.
+
 ## Problèmes courants
 
 1. **Port MariaDB** : Utiliser 3307, pas 3306
