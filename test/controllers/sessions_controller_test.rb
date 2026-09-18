@@ -6,6 +6,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "form[action='#{test_email_session_path}'] button", text: "Tester l'envoi d'un email"
+    assert_select "footer", text: /Dernier déploiement : \d{2}\/\d{2}\/\d{4} à \d{2}:\d{2}/
 
     assert_emails 1 do
       post test_email_session_path
