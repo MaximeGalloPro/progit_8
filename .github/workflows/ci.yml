@@ -5,6 +5,14 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
+env:
+  # Surchargeable via un secret REGISTRY ; par défaut le registry privé partagé.
+  REGISTRY: ${{ secrets.REGISTRY || 'docker-registry.sousa-dev.com' }}
+  IMAGE_NAME: progit-8
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
@@ -53,8 +61,46 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
-  deploy:
+  # Construit l'image de production (Dockerfile racine) et la pousse sur le registry privé.
+  # Sur PR l'image est seulement construite, jamais poussée : ça valide le Dockerfile
+  # (bundle install + assets:precompile) avant le merge, sans toucher au tag `latest`.
+  build:
+    name: Build image
     needs: [ scan_ruby, scan_js, lint ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to the private registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: ${{ github.event_name == 'push' }}
+          # `latest` est ce que Coolify tire ; le tag SHA permet de rollback
+          # sur un commit précis depuis l'UI Coolify.
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ env.IMAGE_NAME }}
+          cache-to: type=gha,scope=${{ env.IMAGE_NAME }},mode=max
+
+  # Ping Coolify pour qu'il tire la nouvelle image et redémarre le service.
+  # Sans `needs: build` ce ping redéployait l'ancien code : c'est ce qui figeait progit.club.
+  deploy:
+    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 2
@@ -64,6 +110,10 @@ jobs:
           COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
           COOLIFY_DEPLOY_URL: ${{ secrets.COOLIFY_DEPLOY_URL }}
         run: |
+          if [ -z "${COOLIFY_DEPLOY_URL}" ]; then
+            echo "COOLIFY_DEPLOY_URL non configuré — déploiement ignoré."
+            exit 0
+          fi
           curl --fail-with-body --silent --show-error \
             --request POST \
             --header "Authorization: Bearer ${COOLIFY_API_TOKEN}" \

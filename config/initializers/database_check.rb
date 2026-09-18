@@ -2,6 +2,11 @@
 
 # Check that all configured databases exist on boot
 Rails.application.config.after_initialize do
+  # Le `assets:precompile` du Dockerfile boote l'app sans base joignable. Rails pose
+  # SECRET_KEY_BASE_DUMMY dans ce contexte : on saute la vérification, sinon le raise
+  # plus bas fait échouer la construction de l'image.
+  next if ENV["SECRET_KEY_BASE_DUMMY"].present?
+
   missing_databases = []
 
   ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).each do |config|

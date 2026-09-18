@@ -1,0 +1,71 @@
+# Stack à coller dans Coolify (Service > Docker Compose) pour progit.club.
+#
+# Ce fichier n'est pas utilisé en local : `docker-compose.yml` à la racine reste
+# le compose de développement. Celui-ci documente ce que Coolify doit exécuter.
+#
+# Différence clé avec l'ancienne conf : plus de `build: /root/progit_8` ni de
+# bind-mount du code. L'image est construite par la CI (.github/workflows/ci.yml)
+# et tirée depuis le registry privé, donc un redéploiement Coolify récupère bien
+# le dernier commit de `main`.
+#
+# Pour rollback : remplacer `:latest` par `:<sha-du-commit>` (la CI pousse les deux).
+
+services:
+  web:
+    image: 'docker-registry.sousa-dev.com/progit-8:latest'
+    # Sans ça Coolify redémarre le conteneur avec l'image déjà en cache locale.
+    pull_policy: always
+    # 80 = port exposé par Thruster dans l'image (il fait tourner Puma sur 3000 derrière lui).
+    ports:
+      - '3090:80'
+    environment:
+      # L'image est construite avec BUNDLE_WITHOUT=development : elle ne peut
+      # tourner qu'en production (les gems de dev ne sont pas installées).
+      - 'RAILS_ENV=production'
+      - 'SECRET_KEY_BASE=${SECRET_KEY_BASE}'
+      - 'DATABASE_HOST=${DATABASE_HOST}'
+      - 'DATABASE_PORT=${DATABASE_PORT}'
+      - 'DATABASE_USERNAME=${DATABASE_USERNAME}'
+      - 'DATABASE_PASSWORD=${DATABASE_PASSWORD}'
+      # En production config/database.yml déclare 4 bases : primary, cache, queue, cable.
+      - 'DATABASE_NAME=${DATABASE_NAME}'
+      - 'DATABASE_CACHE_NAME=${DATABASE_CACHE_NAME}'
+      - 'DATABASE_QUEUE_NAME=${DATABASE_QUEUE_NAME}'
+      - 'DATABASE_CABLE_NAME=${DATABASE_CABLE_NAME}'
+      # Selenium est une dépendance runtime : OpenrunnerFetchService scrape openrunner.com.
+      - 'SELENIUM_REMOTE_URL=http://selenium:4444'
+      - 'GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}'
+      - 'GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}'
+      - 'INVITATION_CODE=${INVITATION_CODE}'
+      # Emails transactionnels (Resend) — cf. config/environments/production.rb.
+      - 'APP_HOST=${APP_HOST:-progit.club}'
+      - 'APP_PROTOCOL=${APP_PROTOCOL:-https}'
+      - 'MAILER_FROM=${MAILER_FROM}'
+      - 'SMTP_PASSWORD=${SMTP_PASSWORD}'
+      # Fait tourner Solid Queue dans le process Puma (cf. config/puma.rb).
+      - 'SOLID_QUEUE_IN_PUMA=1'
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://localhost/up'
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    depends_on:
+      - selenium
+
+  selenium:
+    # Tag figé volontairement : `:latest` bouge côté Selenium (plusieurs fois par mois),
+    # ce qui re-télécharge ~1 Go à chaque déploiement et fait dériver la version de
+    # Chromium sous OpenrunnerFetchService. À bumper explicitement.
+    image: 'selenium/standalone-chromium:4.49.0-20260909'
+    pull_policy: if_not_present
+    shm_size: 2gb
+    restart: unless-stopped
+    # Pas de `ports:` ici : `web` l'atteint via le réseau du compose. Publier 4444
+    # sur l'hôte exposerait un noeud Selenium ouvert sur Internet.
