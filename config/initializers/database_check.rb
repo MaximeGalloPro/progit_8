@@ -2,10 +2,13 @@
 
 # Check that all configured databases exist on boot
 Rails.application.config.after_initialize do
-  # Le `assets:precompile` du Dockerfile boote l'app sans base joignable. Rails pose
-  # SECRET_KEY_BASE_DUMMY dans ce contexte : on saute la vérification, sinon le raise
-  # plus bas fait échouer la construction de l'image.
-  next if ENV["SECRET_KEY_BASE_DUMMY"].present?
+  # Ne vérifier qu'au démarrage d'un serveur web (`bin/rails server`, via bin/dev en
+  # développement et Thruster en production). Les tâches rake bootent aussi l'app, et y
+  # lever une exception bloquait deux choses :
+  #   - le `db:prepare` de bin/docker-entrypoint, qui est précisément ce qui crée les
+  #     bases manquantes — le conteneur ne pouvait donc jamais démarrer ;
+  #   - le `assets:precompile` du Dockerfile, qui tourne sans base joignable.
+  next unless defined?(Rails::Server)
 
   missing_databases = []
 
