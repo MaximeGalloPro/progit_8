@@ -26,7 +26,30 @@ class SessionsController < ApplicationController
     EmailTestMailer.delivery_test.deliver_now
     redirect_to new_session_path, notice: "Email de test envoyé à gallo.max13@gmail.com."
   rescue StandardError => error
-    Rails.logger.error("Test email delivery failed: #{error.class}: #{error.message}")
-    redirect_to new_session_path, alert: "Échec de l'envoi de l'email de test. Consultez les logs du serveur."
+    @email_test_error = email_test_diagnostic(error)
+    Rails.logger.error("Test email delivery failed:\n#{@email_test_error}")
+    flash.now[:alert] = "Échec de l'envoi de l'email de test. Le diagnostic détaillé est affiché ci-dessous."
+    render :new, status: :unprocessable_entity
   end
+
+  private
+    def email_test_diagnostic(error)
+      smtp = Rails.application.config.action_mailer.smtp_settings || {}
+
+      [
+        "Exception : #{error.class}",
+        "Message : #{error.message}",
+        "Cause : #{error.cause ? "#{error.cause.class}: #{error.cause.message}" : "aucune"}",
+        "SMTP : #{smtp[:address]}:#{smtp[:port]}",
+        "Domaine SMTP : #{smtp[:domain]}",
+        "Utilisateur SMTP : #{smtp[:user_name]}",
+        "Mot de passe SMTP présent : #{smtp[:password].present? ? "oui" : "non"}",
+        "Authentification : #{smtp[:authentication]}",
+        "STARTTLS : #{smtp[:enable_starttls_auto]}",
+        "Expéditeur : #{ENV.fetch("MAILER_FROM", "ProGit <noreply@progit.club>")}",
+        "Destinataire : #{EmailTestMailer::RECIPIENT}",
+        "Trace :",
+        *Array(error.backtrace).first(12)
+      ].join("\n")
+    end
 end
