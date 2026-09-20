@@ -71,6 +71,11 @@
       </div>
 
       <div class="mt-6 border-t border-slate-700 pt-6">
+        <% if resend_configured? %>
+          <p class="mb-3 text-center text-xs font-medium text-emerald-400">✓ Resend présente</p>
+        <% else %>
+          <p class="mb-3 text-center text-xs font-medium text-red-400">✕ Resend absente</p>
+        <% end %>
         <%= button_to t('.test_email'), test_email_session_path, method: :post, class: "w-full rounded-lg border border-amber-500 px-4 py-3 text-sm font-semibold text-amber-300 hover:bg-amber-500/10 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors" %>
       </div>
     </div>

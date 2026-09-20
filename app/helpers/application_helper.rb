@@ -4,6 +4,12 @@
 # link generation, and button rendering. Provides utilities for managing resource
 # access with CanCanCan integration.
 module ApplicationHelper
+  def resend_configured?
+    smtp_settings = Rails.application.config.action_mailer.smtp_settings || {}
+
+    smtp_settings[:address] == "smtp.resend.com" && smtp_settings[:password].present?
+  end
+
   # Link conditionnel basé sur les permissions CanCan
   #
   # Exemples:
