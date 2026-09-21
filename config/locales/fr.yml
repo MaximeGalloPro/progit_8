@@ -185,6 +185,7 @@ fr:
       subtitle: "Bienvenue ! Veuillez entrer vos identifiants"
       email_label: "Adresse email"
       password_label: "Mot de passe"
+      password_placeholder: "Saisissez votre mot de passe"
       forgot_password: "Mot de passe oublié ?"
       sign_in: "Se connecter"
       or_continue: "Ou continuer avec"
@@ -198,6 +199,7 @@ fr:
       name_label: "Nom complet"
       email_label: "Adresse email"
       password_label: "Mot de passe"
+      password_placeholder: "8 caractères minimum"
       invitation_code_label: "Code d'invitation"
       invitation_code_placeholder: "Entrez le code d'invitation"
       create_button: "Créer un compte"
@@ -214,6 +216,7 @@ fr:
       set_password_warning: "⚠️ Définir un mot de passe (Requis pour dissocier Google)"
       set_password_help: "Vous devez définir un mot de passe avant de pouvoir dissocier votre compte Google."
       password_label: "Mot de passe"
+      password_placeholder: "8 caractères minimum"
       account_information: "Informations du compte"
       full_name: "Nom complet"
       email_address: "Adresse email"
@@ -251,6 +254,10 @@ fr:
       save_button: "Enregistrer le mot de passe"
       back_to_sign_in: "Retour à la connexion"
 
+  passwords_mailer:
+    reset:
+      subject: "Réinitialisez votre mot de passe ProGit"
+
   omniauth_callbacks:
     invitation:
       title: "Finaliser l'inscription"
@@ -262,6 +269,15 @@ fr:
       cancel: "Annuler"
 
   flash:
+    sessions:
+      rate_limited: "Trop de tentatives. Veuillez patienter quelques minutes avant de réessayer."
+      invalid_credentials: "Adresse email ou mot de passe incorrect."
+    passwords:
+      instructions_sent: "Si un compte correspond à cette adresse email, les instructions de réinitialisation ont été envoyées."
+      reset_success: "Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter."
+      confirmation_mismatch: "Les deux mots de passe ne correspondent pas."
+      invalid_password: "Le mot de passe doit comporter au moins 8 caractères."
+      invalid_token: "Le lien de réinitialisation est invalide ou a expiré."
     omniauth_callbacks:
       google_success: "Connexion réussie avec Google !"
       link_success: "Compte Google lié avec succès !"

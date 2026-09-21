@@ -1,4 +1,15 @@
 <p>
-  You can reset your password within the next 15 minutes on
-  <%= link_to "this password reset page", edit_password_url(@user.password_reset_token) %>.
+  Bonjour,
+</p>
+
+<p>
+  Une demande de réinitialisation du mot de passe de votre compte ProGit a été effectuée.
+</p>
+
+<p>
+  <%= link_to "Réinitialiser mon mot de passe", edit_password_url(@user.password_reset_token) %>
+</p>
+
+<p>
+  Ce lien expirera dans 15 minutes. Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.
 </p>
