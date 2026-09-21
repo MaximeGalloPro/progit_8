@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  resource :session do
-    post :test_email
-  end
+  resource :session
   resources :passwords, param: :token
 
   # User profile and signup

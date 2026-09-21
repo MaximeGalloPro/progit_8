@@ -190,7 +190,6 @@ fr:
       or_continue: "Ou continuer avec"
       no_account: "Vous n'avez pas de compte ?"
       create_account: "Créer un compte"
-      test_email: "Tester l'envoi d'un email"
 
   users:
     new:
@@ -241,6 +240,15 @@ fr:
       subtitle: "Entrez votre adresse email et nous vous enverrons les instructions de réinitialisation"
       email_label: "Adresse email"
       send_button: "Envoyer les instructions"
+      back_to_sign_in: "Retour à la connexion"
+    edit:
+      title: "Nouveau mot de passe"
+      subtitle: "Choisissez un nouveau mot de passe pour retrouver l'accès à votre compte"
+      password_label: "Nouveau mot de passe"
+      password_confirmation_label: "Confirmer le mot de passe"
+      password_placeholder: "8 caractères minimum"
+      password_confirmation_placeholder: "Répétez votre mot de passe"
+      save_button: "Enregistrer le mot de passe"
       back_to_sign_in: "Retour à la connexion"
 
   omniauth_callbacks:
